@@ -31,12 +31,6 @@
 
 백업, 내보내기, 정리 같은 관리 기능을 사용할 수 있습니다.
 
-### 모바일 화면
-
-<img src="docs/screenshots/mobile-view.png" width="420" alt="모바일 화면">
-
-같은 네트워크에서 모바일 브라우저로 접속해 목록을 확인할 수 있습니다.
-
 
 
 # LocalReadLog
