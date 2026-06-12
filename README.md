@@ -1,3 +1,56 @@
+## 화면 예시
+
+스크린샷은 `docs/screenshots/` 폴더에 넣어주세요.
+
+```txt
+docs/
+└─ screenshots/
+   ├─ current-list.png
+   ├─ deleted-list.png
+   ├─ settings-sites.png
+   ├─ settings-categories.png
+   ├─ manage.png
+   └─ mobile-view.png
+```
+
+### 현재 목록
+
+<img src="docs/screenshots/current-list.png" width="900" alt="현재 목록 화면">
+
+현재 기록된 작품을 확인하고, 열기 / 화수선택 / 분류 / 제목수정 / 삭제를 할 수 있습니다.
+
+### 삭제 목록
+
+<img src="docs/screenshots/deleted-list.png" width="900" alt="삭제 목록 화면">
+
+삭제한 항목을 확인하고, 복구하거나 완전삭제할 수 있습니다.
+
+### 설정 - 사이트 관리
+
+<img src="docs/screenshots/settings-sites.png" width="900" alt="사이트 관리 화면">
+
+사이트 ON/OFF, 사이트명 수정, 기본 분류 변경, 사이트 우선순위 조정이 가능합니다.
+
+### 설정 - 분류 관리
+
+<img src="docs/screenshots/settings-categories.png" width="900" alt="분류 관리 화면">
+
+웹툰 / 만화 / 망가 / 소설 / 애니 / 기타 같은 분류를 추가하거나 이름을 수정할 수 있습니다.
+
+### 관리 화면
+
+<img src="docs/screenshots/manage.png" width="900" alt="관리 화면">
+
+백업, 내보내기, 정리 같은 관리 기능을 사용할 수 있습니다.
+
+### 모바일 화면
+
+<img src="docs/screenshots/mobile-view.png" width="420" alt="모바일 화면">
+
+같은 네트워크에서 모바일 브라우저로 접속해 목록을 확인할 수 있습니다.
+
+
+
 # LocalReadLog
 
 Windows 로컬에서 브라우저 방문기록을 읽어 웹툰/만화/소설/애니 최신 화수를 관리하는 도구입니다.
