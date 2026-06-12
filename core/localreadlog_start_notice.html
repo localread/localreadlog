@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LocalReadLog 시작 중</title>
+  <style>
+    :root { color-scheme: dark light; }
+    body { margin: 0; font-family: system-ui, "Malgun Gothic", sans-serif; background: #111827; color: #e5e7eb; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .box { width: min(720px, calc(100vw - 32px)); background: #1f2937; border: 1px solid #374151; border-radius: 18px; padding: 28px; box-shadow: 0 16px 60px rgba(0,0,0,.35); }
+    h1 { margin: 0 0 10px; font-size: 26px; }
+    p { line-height: 1.6; }
+    .muted { color: #9ca3af; }
+    .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .links a { color: #111827; background: #e5e7eb; text-decoration: none; padding: 9px 12px; border-radius: 10px; font-weight: 700; }
+    .warn { margin-top: 18px; padding: 12px; border-radius: 12px; background: #111827; border: 1px solid #374151; color: #d1d5db; font-size: 14px; }
+    code { color: #f9fafb; }
+  </style>
+</head>
+<body>
+  <main class="box">
+    <h1>LocalReadLog 시작 중</h1>
+    <p class="muted">서버를 백그라운드에서 여는 중입니다. 준비되면 관리 화면이 따로 자동으로 열립니다.</p>
+    <p>자동으로 안 열리면 아래 주소를 눌러보세요.</p>
+    <div class="links">
+      <a href="http://127.0.0.1:8787/">127.0.0.1:8787</a>
+      <a href="http://127.0.0.1:8877/">127.0.0.1:8877</a>
+      <a href="http://127.0.0.1:18787/">127.0.0.1:18787</a>
+      <a href="http://127.0.0.1:28787/">127.0.0.1:28787</a>
+    </div>
+    <div class="warn">
+      계속 안 열리면 <code>02_Run_With_Window_For_Error_Check.bat</code>를 실행해서 오류를 확인하세요.<br>
+      이 페이지는 시작 알림용이라 닫아도 됩니다.
+    </div>
+  </main>
+</body>
+</html>

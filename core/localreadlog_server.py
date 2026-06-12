@@ -3223,14 +3223,14 @@ def render_live_view(kind):
 
         for row in rows:
             title = html.escape(row.get("title", ""))
-            ep = html.escape(row.get("latest_episode", ""))
+            ep = html.escape(_lrl_episode_display_label(row.get("latest_episode", "")))
             last_seen = html.escape(row.get("last_seen", ""))
             url = html.escape(row.get("url", ""), quote=True)
             open_link = f'<a class="open" href="{url}" target="_blank">열기</a>' if row.get("url") else ""
             table_rows.append(f"""
             <tr data-search="{title} {ep} {last_seen}">
                 <td class="title">{title}</td>
-                <td>{ep}화</td>
+                <td>{ep}</td>
                 <td>{last_seen}</td>
                 <td>{open_link}</td>
             </tr>
@@ -3354,7 +3354,7 @@ update();
 
     for row in rows:
         title = html.escape(row.get("title", ""))
-        ep = html.escape(row.get("latest_episode", ""))
+        ep = html.escape(_lrl_episode_display_label(row.get("latest_episode", "")))
         last_seen = html.escape(row.get("last_seen", ""))
         url = html.escape(row.get("url", ""), quote=True)
         open_link = f'<a class="open" href="{url}" target="_blank">열기</a>' if row.get("url") else ""
@@ -3362,7 +3362,7 @@ update();
         <div class="card" data-search="{title} {ep} {last_seen}">
             <div class="title">{title}</div>
             <div class="meta">
-                <span>{ep}화</span>
+                <span>{ep}</span>
                 <span>{last_seen}</span>
             </div>
             <div class="quick-buttons">
@@ -8290,58 +8290,13 @@ def _decode_subprocess_bytes(value):
 
 
 def _windows_ip_candidates():
-    candidates = []
-    if os.name != "nt":
-        return candidates
-    ps = r"""
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$OutputEncoding = [System.Text.Encoding]::UTF8
-$items = @()
-Get-NetIPConfiguration -ErrorAction SilentlyContinue | ForEach-Object {
-  $alias = $_.InterfaceAlias
-  $desc = $_.InterfaceDescription
-  foreach ($addr in ($_.IPv4Address | Where-Object { $_.IPAddress -and $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' })) {
-    $items += [PSCustomObject]@{ InterfaceAlias=$alias; InterfaceDescription=$desc; IPAddress=$addr.IPAddress }
-  }
-}
-$items | ConvertTo-Json -Compress
-"""
-    try:
-        result = subprocess.run(
-            ["powershell", "-NoLogo", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", ps],
-            capture_output=True,
-            timeout=4,
-        )
-        raw = _decode_subprocess_bytes(result.stdout).strip()
-        if not raw:
-            return candidates
-        # PowerShell may prepend non-JSON noise in unusual environments. Keep only JSON-looking payload.
-        first_obj = raw.find("{")
-        first_arr = raw.find("[")
-        starts = [x for x in [first_obj, first_arr] if x >= 0]
-        if starts:
-            raw = raw[min(starts):]
-        data = json.loads(raw)
-        if isinstance(data, dict):
-            data = [data]
-        for row in data if isinstance(data, list) else []:
-            if not isinstance(row, dict):
-                continue
-            ip = str(row.get("IPAddress", "") or "").strip()
-            if not _is_private_ipv4(ip):
-                continue
-            candidates.append({
-                "ip": ip,
-                "adapter": str(row.get("InterfaceAlias", "") or "").strip(),
-                "description": str(row.get("InterfaceDescription", "") or "").strip(),
-                "source": "windows",
-            })
-    except Exception as e:
-        try:
-            append_log(f"모바일 주소 Windows 네트워크 조회 실패: {e}")
-        except Exception:
-            pass
-    return candidates
+    """
+    v0.1.29:
+    Windows PowerShell의 Get-NetIPConfiguration 조회는 일부 PC에서 오래 멈추거나
+    긴 오류 로그를 남길 수 있어서 사용하지 않는다.
+    모바일 주소 추천은 아래 _socket_ip_candidates()의 기본 네트워크 주소만 사용한다.
+    """
+    return []
 
 
 def _socket_ip_candidates():
@@ -8372,7 +8327,7 @@ def get_mobile_address_candidates(port=None):
     if port is None:
         port = globals().get("CURRENT_SERVER_PORT", PORT)
     primary = _primary_lan_ip()
-    raw_rows = _windows_ip_candidates() or _socket_ip_candidates()
+    raw_rows = _socket_ip_candidates()
     if primary and all(r.get("ip") != primary for r in raw_rows):
         raw_rows.insert(0, {"ip": primary, "adapter": "기본 네트워크", "description": "", "source": "default_route"})
 
@@ -10515,6 +10470,488 @@ except Exception as e:
         append_log(f"INDEX_HTML v0.1.26 목록 초기화 순서 보정 실패: {e}")
     except Exception:
         pass
+
+
+# =========================
+# v0.1.27: 화수 없는 상세 페이지는 부제목을 화수 칸에 표시
+# =========================
+LOCALREADLOG_VERSION = "v0.1.28"
+
+
+def _lrl_numeric_episode_text_v027(value):
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    try:
+        n = float(text)
+    except Exception:
+        return ""
+    if n <= 0:
+        return ""
+    if n.is_integer():
+        return str(int(n))
+    return str(n)
+
+
+def _lrl_safe_subtitle_text_v027(value):
+    text = clean_title(value)
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", "", text).strip()
+    text = re.sub(r"\s+", " ", text).strip(" -–—_:：|/\\")
+    if not text:
+        return ""
+    if re.match(r"^https?://", text, flags=re.I):
+        return ""
+    if re.fullmatch(r"[0-9A-Za-z_-]{12,}", text):
+        return ""
+    if len(text) > 80:
+        text = text[:80].rstrip()
+    return text
+
+
+def _lrl_episode_display_value_v027(value):
+    numeric = _lrl_numeric_episode_text_v027(value)
+    if numeric:
+        return numeric
+    return _lrl_safe_subtitle_text_v027(value)
+
+
+def _lrl_episode_display_label(value):
+    value = _lrl_episode_display_value_v027(value)
+    if not value:
+        return ""
+    return f"{value}화" if _lrl_numeric_episode_text_v027(value) else value
+
+
+def _lrl_valid_episode_text(value):
+    return _lrl_episode_display_value_v027(value)
+
+
+def _lrl_drop_invalid_episode_fields(item):
+    if not isinstance(item, dict):
+        return item
+
+    item["latest_episode"] = _lrl_episode_display_value_v027(item.get("latest_episode", ""))
+    item["locked_episode"] = _lrl_numeric_episode_text_v027(item.get("locked_episode", ""))
+
+    cleaned_history = {}
+    history = item.get("episode_history", {}) or {}
+    if isinstance(history, dict):
+        for ep, record in history.items():
+            ep_key = _lrl_numeric_episode_text_v027(ep)
+            if not ep_key and isinstance(record, dict):
+                ep_key = _lrl_numeric_episode_text_v027(record.get("episode", ""))
+            if not ep_key:
+                continue
+            if isinstance(record, dict):
+                rec = dict(record)
+                rec["episode"] = ep_key
+                cleaned_history[ep_key] = rec
+    item["episode_history"] = cleaned_history
+
+    blocked = []
+    for ep in item.get("blocked_episodes", []) or []:
+        ep_key = _lrl_numeric_episode_text_v027(ep)
+        if ep_key:
+            blocked.append(ep_key)
+    item["blocked_episodes"] = blocked
+    return item
+
+
+try:
+    _prev_get_rows_by_status_subtitle_v027
+except NameError:
+    _prev_get_rows_by_status_subtitle_v027 = get_rows_by_status
+
+    def get_rows_by_status(status):
+        rows = _prev_get_rows_by_status_subtitle_v027(status)
+        for row in rows:
+            if isinstance(row, dict):
+                row["latest_episode"] = _lrl_episode_display_value_v027(row.get("latest_episode", ""))
+                row["locked_episode"] = _lrl_numeric_episode_text_v027(row.get("locked_episode", ""))
+        return rows
+
+try:
+    _prev_item_to_row_subtitle_v027
+except NameError:
+    _prev_item_to_row_subtitle_v027 = item_to_row
+
+    def item_to_row(item):
+        row = _prev_item_to_row_subtitle_v027(item)
+        row["latest_episode"] = _lrl_episode_display_value_v027(row.get("latest_episode", ""))
+        row["locked_episode"] = _lrl_numeric_episode_text_v027(row.get("locked_episode", ""))
+        return row
+
+try:
+    INDEX_HTML = INDEX_HTML.replace('</script>', """
+function lrlEpisodeText(ep) {
+    const value = String(ep || '').trim();
+    if (!value) return '';
+    return /^\\d+(?:\\.\\d+)?$/.test(value) ? value + '화' : value;
+}
+</script>""")
+except Exception as e:
+    try:
+        append_log(f"INDEX_HTML v0.1.27 부제목 화수 표시 보정 실패: {e}")
+    except Exception:
+        pass
+
+
+# =========================
+# v0.1.28: 괄호 숫자 부제목 표시 호환
+# =========================
+LOCALREADLOG_VERSION = "v0.1.28"
+# 백업 스캐너가 `(1)` 같은 부제목을 latest_episode에 저장하면,
+# v0.1.27의 표시 함수가 숫자 화수로 바꾸지 않고 그대로 렌더링한다.
+
+
+
+# =========================
+# v0.1.29: 탭 전환/휴식 후 첫 로딩 속도 개선
+# =========================
+LOCALREADLOG_VERSION = "v0.1.29"
+
+_LRL_FAST_CACHE_SECONDS_V029 = 300
+_LRL_STATUS_CACHE_SECONDS_V029 = 30
+
+try:
+    _LRL_CACHE_LOCK
+except NameError:
+    _LRL_CACHE_LOCK = threading.RLock()
+    _LRL_DB_CACHE = {"key": None, "db": None, "at": 0.0}
+    _LRL_ROW_CACHE = {}
+    _LRL_MISC_CACHE = {}
+
+def _lrl_copy_jsonable_v029(value):
+    try:
+        return json.loads(json.dumps(value, ensure_ascii=False, default=str))
+    except Exception:
+        return value
+
+try:
+    _prev_ensure_db_v029
+except NameError:
+    _prev_ensure_db_v029 = ensure_db
+
+    def ensure_db():
+        """
+        화면 읽기 요청에서는 DB 파일이 바뀌지 않은 한 재동기화/재저장을 반복하지 않는다.
+        DB 수정/백업 후에는 save_db/POST 쪽에서 캐시를 비우므로 최신성은 유지된다.
+        """
+        try:
+            if DB_JSON.exists():
+                key = _lrl_db_file_key() if '_lrl_db_file_key' in globals() else None
+                with _LRL_CACHE_LOCK:
+                    cached = _LRL_DB_CACHE.get("db")
+                    if cached is not None and _LRL_DB_CACHE.get("key") == key:
+                        return cached
+
+                db = load_db()
+                with _LRL_CACHE_LOCK:
+                    _LRL_DB_CACHE.update({"key": key, "db": db, "at": time.time()})
+                return db
+        except Exception:
+            pass
+
+        db = _prev_ensure_db_v029()
+        try:
+            with _LRL_CACHE_LOCK:
+                _LRL_DB_CACHE.update({"key": _lrl_db_file_key() if '_lrl_db_file_key' in globals() else None, "db": db, "at": time.time()})
+        except Exception:
+            pass
+        return db
+
+try:
+    _prev_get_rows_by_status_v029
+except NameError:
+    _prev_get_rows_by_status_v029 = get_rows_by_status
+
+    def get_rows_by_status(status):
+        key = ("rows_v029", str(status), _lrl_db_file_key() if '_lrl_db_file_key' in globals() else None)
+        now_value = time.time()
+        try:
+            with _LRL_CACHE_LOCK:
+                item = _LRL_ROW_CACHE.get(key)
+                if item and (now_value - float(item.get("at") or 0)) < _LRL_FAST_CACHE_SECONDS_V029:
+                    return _lrl_copy_jsonable_v029(item.get("value", []))
+        except Exception:
+            pass
+
+        value = _prev_get_rows_by_status_v029(status)
+
+        try:
+            with _LRL_CACHE_LOCK:
+                _LRL_ROW_CACHE[key] = {"at": now_value, "value": _lrl_copy_jsonable_v029(value)}
+        except Exception:
+            pass
+
+        return value
+
+try:
+    _prev_get_issue_rows_v029
+except NameError:
+    _prev_get_issue_rows_v029 = get_issue_rows
+
+    def get_issue_rows():
+        key = ("issues_v029", _lrl_db_file_key() if '_lrl_db_file_key' in globals() else None)
+        now_value = time.time()
+        try:
+            with _LRL_CACHE_LOCK:
+                item = _LRL_MISC_CACHE.get(key)
+                if item and (now_value - float(item.get("at") or 0)) < _LRL_FAST_CACHE_SECONDS_V029:
+                    return _lrl_copy_jsonable_v029(item.get("value", []))
+        except Exception:
+            pass
+
+        value = _prev_get_issue_rows_v029()
+
+        try:
+            with _LRL_CACHE_LOCK:
+                _LRL_MISC_CACHE[key] = {"at": now_value, "value": _lrl_copy_jsonable_v029(value)}
+        except Exception:
+            pass
+
+        return value
+
+try:
+    _prev_get_diagnostics_payload_v029
+except NameError:
+    _prev_get_diagnostics_payload_v029 = get_diagnostics_payload
+
+    def get_diagnostics_payload():
+        key = ("diagnostics_v029", _lrl_db_file_key() if '_lrl_db_file_key' in globals() else None, globals().get("CURRENT_SERVER_PORT", PORT))
+        now_value = time.time()
+        try:
+            with _LRL_CACHE_LOCK:
+                item = _LRL_MISC_CACHE.get(key)
+                if item and (now_value - float(item.get("at") or 0)) < _LRL_FAST_CACHE_SECONDS_V029:
+                    return _lrl_copy_jsonable_v029(item.get("value", {}))
+        except Exception:
+            pass
+
+        value = _prev_get_diagnostics_payload_v029()
+
+        try:
+            with _LRL_CACHE_LOCK:
+                _LRL_MISC_CACHE[key] = {"at": now_value, "value": _lrl_copy_jsonable_v029(value)}
+        except Exception:
+            pass
+
+        return value
+
+try:
+    _prev_get_status_payload_v029
+except NameError:
+    _prev_get_status_payload_v029 = get_status_payload
+
+    def get_status_payload():
+        key = ("status_v029", _lrl_db_file_key() if '_lrl_db_file_key' in globals() else None, globals().get("CURRENT_SERVER_PORT", PORT))
+        now_value = time.time()
+        try:
+            with _LRL_CACHE_LOCK:
+                item = _LRL_MISC_CACHE.get(key)
+                if item and (now_value - float(item.get("at") or 0)) < _LRL_STATUS_CACHE_SECONDS_V029:
+                    return _lrl_copy_jsonable_v029(item.get("value", {}))
+        except Exception:
+            pass
+
+        value = _prev_get_status_payload_v029()
+
+        try:
+            with _LRL_CACHE_LOCK:
+                _LRL_MISC_CACHE[key] = {"at": now_value, "value": _lrl_copy_jsonable_v029(value)}
+        except Exception:
+            pass
+
+        return value
+
+try:
+    _prev_get_settings_payload_v029
+except NameError:
+    _prev_get_settings_payload_v029 = get_settings_payload
+
+    def get_settings_payload():
+        """
+        /api/settings는 탭 전환 때 자주 불리므로 가볍게 유지한다.
+        무거운 상태/진단/로그는 설정/관리 화면에서 별도 호출한다.
+        """
+        db = ensure_db()
+        db = normalize_settings(db)
+        settings = db.get("settings", {})
+
+        try:
+            labels = _lrl_sync_category_globals(db) if '_lrl_sync_category_globals' in globals() else dict(CATEGORY_LABELS)
+        except Exception:
+            labels = dict(CATEGORY_LABELS) if 'CATEGORY_LABELS' in globals() else {}
+
+        enabled = _bool_setting(settings.get("auto_update_enabled", True), True) if '_bool_setting' in globals() else bool(settings.get("auto_update_enabled", True))
+        minutes = _safe_int(settings.get("auto_update_interval_minutes", 60), 60) if '_safe_int' in globals() else int(settings.get("auto_update_interval_minutes", 60) or 60)
+        if minutes not in [30, 60, 180, 360]:
+            minutes = 60
+
+        return {
+            "site_priority": settings.get("site_priority", list(SITE_SPECS.keys())),
+            "hide_site_duplicates": settings.get("hide_site_duplicates", True),
+            "site_labels": {k: v.get("label", k) for k, v in SITE_SPECS.items()},
+            "sites": settings.get("sites", SITE_SPECS),
+            "browser_enabled": settings.get("browser_enabled", DEFAULT_BROWSER_ENABLED),
+            "browser_labels": dict(BROWSER_LABELS),
+            "category_labels": dict(labels),
+            "backup_dir": str(BACKUP_DIR),
+            "default_backup_dir": str(DEFAULT_BACKUP_DIR) if 'DEFAULT_BACKUP_DIR' in globals() else str(BACKUP_DIR),
+            "config_path": str(CONFIG_JSON) if 'CONFIG_JSON' in globals() else "",
+            "custom_backup_dir": (not is_same_path(BACKUP_DIR, DEFAULT_BACKUP_DIR)) if 'DEFAULT_BACKUP_DIR' in globals() else False,
+            "auto_update_enabled": enabled,
+            "auto_update_interval_minutes": minutes,
+            "password_enabled": bool(settings.get("password_enabled")) and bool(settings.get("password_hash")),
+        }
+
+try:
+    _prev_save_db_v029
+except NameError:
+    _prev_save_db_v029 = save_db
+
+    def save_db(db):
+        result = _prev_save_db_v029(db)
+        try:
+            with _LRL_CACHE_LOCK:
+                _LRL_DB_CACHE.update({"key": _lrl_db_file_key() if '_lrl_db_file_key' in globals() else None, "db": db, "at": time.time()})
+                _LRL_ROW_CACHE.clear()
+                _LRL_MISC_CACHE.clear()
+        except Exception:
+            pass
+        return result
+
+_V029_FAST_TAB_JS = r"""
+(function () {
+    const SETTINGS_TTL_MS = 5 * 60 * 1000;
+    const LOG_TTL_MS = 30 * 1000;
+    let settingsFetchedAt = 0;
+    let logsFetchedAt = 0;
+    let settingsInFlight = null;
+
+    const rawApi = api;
+    api = async function(path, data=null) {
+        const result = await rawApi(path, data);
+        if (data && path !== "/api/settings" && path !== "/api/status" && path !== "/api/logs") {
+            settingsFetchedAt = 0;
+            logsFetchedAt = 0;
+        }
+        return result;
+    };
+
+    loadSettings = async function(force=false, includeLogs=false) {
+        const now = Date.now();
+        if (!force && settingsFetchedAt && (now - settingsFetchedAt) < SETTINGS_TTL_MS) {
+            renderSettings();
+            return settings;
+        }
+
+        if (!force && settingsInFlight) {
+            return settingsInFlight;
+        }
+
+        settingsInFlight = rawApi("/api/settings")
+            .then(async data => {
+                settings = Object.assign({}, settings || {}, data || {});
+                settingsFetchedAt = Date.now();
+
+                const needLogs = includeLogs || mode === "settings" || mode === "manage";
+                if (needLogs && (!logsFetchedAt || (Date.now() - logsFetchedAt) > LOG_TTL_MS)) {
+                    try {
+                        const logs = await rawApi("/api/logs");
+                        settings.recent_logs = logs.lines || [];
+                        logsFetchedAt = Date.now();
+                    } catch (e) {
+                        settings.recent_logs = settings.recent_logs || [];
+                    }
+                }
+
+                renderSettings();
+                return settings;
+            })
+            .finally(() => {
+                settingsInFlight = null;
+            });
+
+        return settingsInFlight;
+    };
+
+    reloadList = async function(force=false) {
+        if (mode === "settings") {
+            await loadSettings(force, true);
+            rows = [];
+            renderSettingsPage();
+            if (typeof refreshStatusOnly === "function") refreshStatusOnly();
+            return;
+        }
+
+        if (mode === "manage") {
+            await loadSettings(force, true);
+            rows = [];
+            await renderManagePage();
+            if (typeof refreshStatusOnly === "function") refreshStatusOnly();
+            return;
+        }
+
+        if (mode === "help") {
+            rows = [];
+            renderHelpPage();
+            return;
+        }
+
+        if (mode === "log") {
+            const data = await rawApi("/api/logs");
+            rows = data.lines || [];
+            renderLog();
+            return;
+        }
+
+        await loadSettings(force, false);
+
+        const data = await rawApi(mode === "current" ? "/api/list" : "/api/deleted");
+        rows = data.rows || [];
+        render();
+    };
+
+    setMode = function(nextMode) {
+        mode = nextMode;
+        document.getElementById("tab-current").classList.toggle("active", mode === "current");
+        document.getElementById("tab-deleted").classList.toggle("active", mode === "deleted");
+        document.getElementById("tab-settings").classList.toggle("active", mode === "settings");
+        document.getElementById("tab-log").classList.toggle("active", mode === "log");
+        const manageTab = document.getElementById("tab-manage");
+        if (manageTab) manageTab.classList.toggle("active", mode === "manage");
+        const helpTab = document.getElementById("tab-help");
+        if (helpTab) helpTab.classList.toggle("active", mode === "help");
+        controls.style.display = (["log", "settings", "manage", "help"].includes(mode)) ? "none" : "grid";
+        prioritybar.style.display = (["log", "settings", "manage", "help"].includes(mode)) ? "none" : "grid";
+        if (browserbar) browserbar.style.display = "none";
+        search.value = "";
+        reloadList(false);
+    };
+})();
+"""
+
+try:
+    # 구버전 즉시 reloadList()가 스크립트 중간에서 먼저 실행되어 구버전 loadSettings를 타는 문제를 막는다.
+    INDEX_HTML = INDEX_HTML.replace(
+        'search.addEventListener("input", render);\nsort.addEventListener("change", render);\nreloadList();',
+        'search.addEventListener("input", render);\nsort.addEventListener("change", render);\nsetTimeout(() => reloadList(false), 0);'
+    )
+    # v16 이후 localStorage 보존 코드로 바뀐 이벤트 블록도 같이 처리한다.
+    INDEX_HTML = INDEX_HTML.replace(
+        'search.addEventListener("input", () => { try { localStorage.setItem("lrl.search", search.value); } catch(e) {} render(); });\nsort.addEventListener("change", () => { try { localStorage.setItem("lrl.sort", sort.value); } catch(e) {} render(); });\nreloadList();',
+        'search.addEventListener("input", () => { try { localStorage.setItem("lrl.search", search.value); } catch(e) {} render(); });\nsort.addEventListener("change", () => { try { localStorage.setItem("lrl.sort", sort.value); } catch(e) {} render(); });\nsetTimeout(() => reloadList(false), 0);'
+    )
+    INDEX_HTML = INDEX_HTML.replace('</script>', _V029_FAST_TAB_JS + '\n</script>')
+except Exception as e:
+    try:
+        append_log(f"INDEX_HTML v0.1.29 탭 속도 개선 실패: {e}")
+    except Exception:
+        pass
+
 
 if __name__ == "__main__":
     main()

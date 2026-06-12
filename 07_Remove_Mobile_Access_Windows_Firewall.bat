@@ -1,16 +1,8 @@
 @echo off
 setlocal
-cd /d "%~dp0"
-
-net session >nul 2>nul
-if not "%errorlevel%"=="0" (
-    echo Requesting administrator permission...
-    powershell -NoProfile -ExecutionPolicy Bypass -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
-    exit /b
-)
-
-echo Removing Windows Firewall rule for LocalReadLog mobile access...
-netsh advfirewall firewall delete rule name="LocalReadLog Mobile Access" >nul 2>nul
-
-echo Done.
+netsh advfirewall firewall delete rule name="LocalReadLog 8787" >nul
+netsh advfirewall firewall delete rule name="LocalReadLog 8877" >nul
+netsh advfirewall firewall delete rule name="LocalReadLog 18787" >nul
+netsh advfirewall firewall delete rule name="LocalReadLog 28787" >nul
+echo LocalReadLog 모바일 접속 방화벽 허용 규칙 제거 완료
 pause

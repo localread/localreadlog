@@ -2055,7 +2055,7 @@ def save_latest_html(rows):
 
     for row in rows:
         title = html.escape(str(row.get("title", "")))
-        latest_episode = html.escape(str(row.get("latest_episode", "")))
+        latest_episode = html.escape(_lrl_episode_display_label(row.get("latest_episode", "")))
         last_seen = html.escape(str(row.get("last_seen", "")))
         url = html.escape(str(row.get("url", "")), quote=True)
 
@@ -2063,7 +2063,7 @@ def save_latest_html(rows):
         <div class="card" data-search="{title} {latest_episode} {last_seen}">
             <div class="title">{title}</div>
             <div class="meta">
-                <span>{latest_episode}화</span>
+                <span>{latest_episode}</span>
                 <span>{last_seen}</span>
             </div>
             <a class="open" href="{url}" target="_blank">열기</a>
@@ -2189,7 +2189,7 @@ def save_latest_pc_html(rows):
 
     for row in rows:
         title = html.escape(str(row.get("title", "")))
-        latest_episode = html.escape(str(row.get("latest_episode", "")))
+        latest_episode = html.escape(_lrl_episode_display_label(row.get("latest_episode", "")))
         last_seen = html.escape(str(row.get("last_seen", "")))
         url_text = html.escape(str(row.get("url", "")))
         url_attr = html.escape(str(row.get("url", "")), quote=True)
@@ -2197,7 +2197,7 @@ def save_latest_pc_html(rows):
         table_rows.append(f"""
         <tr data-search="{title} {latest_episode} {last_seen} {url_text}">
             <td class="title">{title}</td>
-            <td class="episode">{latest_episode}화</td>
+            <td class="episode">{latest_episode}</td>
             <td class="time">{last_seen}</td>
             <td class="open-cell"><a class="open" href="{url_attr}" target="_blank">열기</a></td>
             <td class="url"><a href="{url_attr}" target="_blank">{url_text}</a></td>
@@ -5227,5 +5227,258 @@ except NameError:
             pass
         return result
 
+
+# =========================
+# v0.1.27: 화수 없는 상세 페이지는 부제목을 화수 칸에 표시
+# =========================
+_LRL_VERSION = "v0.1.28"
+
+
+def _lrl_numeric_episode_text_v027(value):
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    try:
+        n = float(text)
+    except Exception:
+        return ""
+    if n <= 0:
+        return ""
+    if n.is_integer():
+        return str(int(n))
+    return str(n)
+
+
+def _lrl_safe_subtitle_text_v027(value):
+    text = clean_title(value)
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", "", text).strip()
+    text = re.sub(r"\s+", " ", text).strip(" -–—_:：|/\\")
+    if not text:
+        return ""
+    if re.match(r"^https?://", text, flags=re.I):
+        return ""
+    if re.fullmatch(r"[0-9A-Za-z_-]{12,}", text):
+        return ""
+    if len(text) > 80:
+        text = text[:80].rstrip()
+    return text
+
+
+def _lrl_episode_display_value_v027(value):
+    numeric = _lrl_numeric_episode_text_v027(value)
+    if numeric:
+        return numeric
+    return _lrl_safe_subtitle_text_v027(value)
+
+
+def _lrl_episode_display_label(value):
+    value = _lrl_episode_display_value_v027(value)
+    if not value:
+        return ""
+    return f"{value}화" if _lrl_numeric_episode_text_v027(value) else value
+
+
+# 기존 v0.1.14의 strict 필터가 latest_episode의 부제목을 지우지 않게 덮어쓴다.
+def _lrl_valid_episode_text(value):
+    return _lrl_episode_display_value_v027(value)
+
+
+def _lrl_drop_invalid_episode_fields(item):
+    if not isinstance(item, dict):
+        return item
+
+    item["latest_episode"] = _lrl_episode_display_value_v027(item.get("latest_episode", ""))
+    item["locked_episode"] = _lrl_numeric_episode_text_v027(item.get("locked_episode", ""))
+
+    cleaned_history = {}
+    history = item.get("episode_history", {}) or {}
+    if isinstance(history, dict):
+        for ep, record in history.items():
+            ep_key = _lrl_numeric_episode_text_v027(ep)
+            if not ep_key and isinstance(record, dict):
+                ep_key = _lrl_numeric_episode_text_v027(record.get("episode", ""))
+            if not ep_key:
+                continue
+            if isinstance(record, dict):
+                rec = dict(record)
+                rec["episode"] = ep_key
+                cleaned_history[ep_key] = rec
+    item["episode_history"] = cleaned_history
+
+    blocked = []
+    for ep in item.get("blocked_episodes", []) or []:
+        ep_key = _lrl_numeric_episode_text_v027(ep)
+        if ep_key:
+            blocked.append(ep_key)
+    item["blocked_episodes"] = blocked
+    return item
+
+
+def _lrl_subtitle_from_page_title_v027(title):
+    title = _lrl_clean_page_title_for_series(title) if "_lrl_clean_page_title_for_series" in globals() else clean_title(title)
+    if not title or parse_episode_number(title):
+        return ""
+
+    candidates = []
+    splitters = [
+        r"\s+[-–—]\s+",
+        r"\s+[:：]\s+",
+    ]
+    for splitter in splitters:
+        parts = [p.strip() for p in re.split(splitter, title, maxsplit=1) if p.strip()]
+        if len(parts) >= 2:
+            candidates.append(parts[1])
+
+    bracket = re.search(r"(?:\s+|^)[\[【『「](.+?)[\]】』」]\s*$", title)
+    if bracket:
+        candidates.append(bracket.group(1))
+
+    for cand in candidates:
+        cand = _lrl_safe_subtitle_text_v027(cand)
+        if not cand:
+            continue
+        if re.fullmatch(r"[\(\[【]?\s*\d+(?:\.\d+)?\s*[\)\]】]?", cand):
+            continue
+        if is_bad_title(cand):
+            continue
+        return cand
+    return ""
+
+
+try:
+    _prev_extract_episode_page_info_v027
+except NameError:
+    _prev_extract_episode_page_info_v027 = extract_episode_page_info
+
+    def extract_episode_page_info(row, series_titles=None):
+        info = _prev_extract_episode_page_info_v027(row, series_titles)
+        if not info:
+            return None
+        info = dict(info)
+        if not _lrl_numeric_episode_text_v027(info.get("latest_episode", "")):
+            subtitle = _lrl_subtitle_from_page_title_v027(row.get("clean_title", "") or row.get("raw_title", ""))
+            if subtitle:
+                info["latest_episode"] = subtitle
+        else:
+            info["latest_episode"] = _lrl_numeric_episode_text_v027(info.get("latest_episode", ""))
+        return info
+
+
+try:
+    _prev_update_db_item_from_chosen_row_v027
+except NameError:
+    _prev_update_db_item_from_chosen_row_v027 = update_db_item_from_chosen_row
+
+    def update_db_item_from_chosen_row(item, row):
+        row_display = _lrl_episode_display_value_v027((row or {}).get("latest_episode", ""))
+        item = _prev_update_db_item_from_chosen_row_v027(item, row)
+        if row_display and not _lrl_numeric_episode_text_v027(row_display):
+            if not db_episode_key(item.get("latest_episode", "")) and not db_episode_key(item.get("locked_episode", "")):
+                item["latest_episode"] = row_display
+                if row.get("last_seen"):
+                    item["last_seen"] = str(row.get("last_seen", "") or item.get("last_seen", ""))
+                if row.get("url"):
+                    item["url"] = str(row.get("url", "") or item.get("url", ""))
+        return normalize_db_item(item)
+
+
+# =========================
+# v0.1.28: 괄호 숫자만 있는 부제목도 화수 칸에 표시
+# =========================
+_LRL_VERSION = "v0.1.28"
+
+
+def _lrl_is_bare_number_v028(value):
+    return bool(re.fullmatch(r"\d+(?:\.\d+)?", str(value or "").strip()))
+
+
+def _lrl_is_bracketed_number_subtitle_v028(value):
+    text = str(value or "").strip()
+    return bool(re.fullmatch(r"(?:\(\s*\d+(?:\.\d+)?\s*\)|（\s*\d+(?:\.\d+)?\s*）|\[\s*\d+(?:\.\d+)?\s*\]|【\s*\d+(?:\.\d+)?\s*】)", text))
+
+
+def _lrl_remove_subtitle_suffix_from_title_v028(title, subtitle):
+    title = clean_title(title)
+    subtitle = str(subtitle or "").strip()
+    if not title or not subtitle:
+        return title
+
+    escaped = re.escape(subtitle)
+    title = re.sub(rf"\s*[-–—:：]\s*{escaped}\s*$", "", title).strip()
+    title = re.sub(rf"\s+{escaped}\s*$", "", title).strip()
+    return re.sub(r"\s*[-–—:：]+\s*$", "", title).strip() or title
+
+
+def _lrl_subtitle_from_page_title_v027(title):
+    title = _lrl_clean_page_title_for_series(title) if "_lrl_clean_page_title_for_series" in globals() else clean_title(title)
+    if not title or parse_episode_number(title):
+        return ""
+
+    candidates = []
+    splitters = [
+        r"\s+[-–—]\s+",
+        r"\s+[:：]\s+",
+    ]
+    for splitter in splitters:
+        parts = [p.strip() for p in re.split(splitter, title, maxsplit=1) if p.strip()]
+        if len(parts) >= 2:
+            candidates.append(parts[1])
+
+    # 제목 끝이 작품명 (1), 작품명（2）처럼 괄호 숫자만 있는 경우도 부제목으로 인정한다.
+    trailing_number_bracket = re.search(r"(\(\s*\d+(?:\.\d+)?\s*\)|（\s*\d+(?:\.\d+)?\s*）)\s*$", title)
+    if trailing_number_bracket:
+        candidates.append(trailing_number_bracket.group(1))
+
+    trailing_square_number = re.search(r"(\[\s*\d+(?:\.\d+)?\s*\]|【\s*\d+(?:\.\d+)?\s*】)\s*$", title)
+    if trailing_square_number:
+        candidates.append(trailing_square_number.group(1))
+
+    bracket = re.search(r"(?:\s+|^)[\[【『「](.+?)[\]】』」]\s*$", title)
+    if bracket:
+        candidates.append(bracket.group(1))
+
+    for cand in candidates:
+        cand = _lrl_safe_subtitle_text_v027(cand)
+        if not cand:
+            continue
+        # 숫자만 단독으로 있는 '1'은 화수로 오인될 수 있으므로 제외한다.
+        # 단, '(1)', '（1）', '[1]'처럼 괄호가 붙은 숫자는 부제목으로 그대로 허용한다.
+        if _lrl_is_bare_number_v028(cand) and not _lrl_is_bracketed_number_subtitle_v028(cand):
+            continue
+        if is_bad_title(cand):
+            continue
+        return cand
+    return ""
+
+
+try:
+    _prev_extract_episode_page_info_v028
+except NameError:
+    _prev_extract_episode_page_info_v028 = extract_episode_page_info
+
+    def extract_episode_page_info(row, series_titles=None):
+        info = _prev_extract_episode_page_info_v028(row, series_titles)
+        if not info:
+            return None
+        info = dict(info)
+        if not _lrl_numeric_episode_text_v027(info.get("latest_episode", "")):
+            subtitle = _lrl_subtitle_from_page_title_v027(row.get("clean_title", "") or row.get("raw_title", ""))
+            if subtitle:
+                info["latest_episode"] = subtitle
+                current_title = str(info.get("title", "") or "")
+                cleaned_title = _lrl_remove_subtitle_suffix_from_title_v028(current_title, subtitle)
+                if cleaned_title:
+                    info["title"] = cleaned_title
+        else:
+            info["latest_episode"] = _lrl_numeric_episode_text_v027(info.get("latest_episode", ""))
+        return info
+
+
 if __name__ == "__main__":
     main()
+
+
+# v0.1.29 release marker
+_LRL_VERSION = "v0.1.29"
