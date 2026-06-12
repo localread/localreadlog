@@ -72,7 +72,7 @@ foreach ($proc in $All) {
 
     $belongsToThisCopy = ($cmd -match $RootRx -or $exe -match $RootRx)
     $belongsToAnyLocalReadLog = ($cmd -match '(?i)localreadlog' -or $exe -match '(?i)localreadlog')
-    $isRelevantHost = ($name -match '(?i)^(python|pythonw|py|cmd|wscript|cscript|conhost)\.exe$')
+    $isRelevantHost = ($name -match '(?i)^(python|pythonw|py|cmd|wscript|cscript|conhost|powershell|pwsh)\.exe$')
 
     if (($belongsToThisCopy -or $belongsToAnyLocalReadLog) -and $isRelevantHost) {
         Add-TargetPid $pidNum 'process-scan'

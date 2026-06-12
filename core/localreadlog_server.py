@@ -6215,7 +6215,7 @@ import socket
 import shutil
 from datetime import timedelta
 
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 _DB_BACKUP_MAX_FILES = 20
 _AUTO_UPDATE_STATE = {
     "enabled": True,
@@ -6761,7 +6761,7 @@ except Exception as e:
 # =========================
 import urllib.parse
 
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 
 def _protected(handler):
@@ -7208,7 +7208,7 @@ except Exception as e:
 # =========================
 # v17 DB 파일 업로드 가져오기
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 
 def _get_multipart_boundary(content_type):
@@ -7343,7 +7343,7 @@ except Exception as e:
 # =========================
 # v19 release polish: version/license-ready UI, safer restore/import UX, security notes
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 _V19_JS = r"""
 function reloadAfterDbChange(message) {
@@ -7409,7 +7409,7 @@ except Exception as e:
 # =========================
 # v20 UI 정리: 설정/관리 탭 재배치, 링크화, 백업 목록 축소
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 _V20_JS = r'''
 
@@ -7495,7 +7495,7 @@ function renderRuntimeStatusBox() {
         <div class="settings-box">
             <h2>실행 상태</h2>
             <div class="small">서버 실행 정보를 확인하는 영역.</div>
-            <div class="setting-row"><div><b>버전</b><div class="small">${escapeHtml(st.version || 'v0.1.11')}</div></div><span></span><span></span></div>
+            <div class="setting-row"><div><b>버전</b><div class="small">${escapeHtml(st.version || 'v0.1.14')}</div></div><span></span><span></span></div>
             <div class="setting-row"><div><b>서버 포트</b><div class="small">${escapeHtml(String(st.port || '-'))}</div></div><span></span><span></span></div>
             <div class="setting-row"><div><b>서버 시작</b><div class="small">${escapeHtml(st.server_started_at || '-')}</div></div><span></span><span></span></div>
             <div class="setting-row"><div><b>DB 위치</b><div class="small">${escapeHtml(st.db_path || '')}</div></div><span></span><span></span></div>
@@ -7644,7 +7644,7 @@ except Exception as e:
 # =========================
 # v0.1.3 UX polish: simpler filenames, copy buttons, clearer feedback
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 _V21_JS = r'''
 function copyTextToClipboard(text, label='주소') {
@@ -7887,7 +7887,7 @@ function renderRuntimeStatusBox() {
         <div class="settings-box">
             <h2>실행 상태</h2>
             <div class="small">서버 실행 정보를 확인하는 영역.</div>
-            <div class="setting-row"><div><b>버전</b><div class="small">${escapeHtml(st.version || 'v0.1.11')}</div></div><span></span><span></span></div>
+            <div class="setting-row"><div><b>버전</b><div class="small">${escapeHtml(st.version || 'v0.1.14')}</div></div><span></span><span></span></div>
             <div class="setting-row"><div><b>서버 포트</b><div class="small">${escapeHtml(String(st.port || '-'))}</div></div><span></span><span></span></div>
             <div class="setting-row"><div><b>서버 시작</b><div class="small">${escapeHtml(st.server_started_at || st.started_at || '-')}</div></div><span></span><span></span></div>
             <div class="setting-row"><div><b>DB 위치</b><div class="small">${escapeHtml(st.db_path || '')}</div></div><span></span><span></span></div>
@@ -7922,7 +7922,7 @@ except Exception as e:
 # =========================
 # v0.1.3 UI cleanup: storage -> Management, issue check -> Log
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 _V012_JS = r'''
 
@@ -8114,7 +8114,7 @@ except NameError:
 # =========================
 # v0.1.9 release polish: local folder open buttons + final manage UI
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 def _safe_start_local_path(target):
     try:
@@ -8236,7 +8236,7 @@ except Exception as e:
 # =========================
 # v0.1.9: mobile address classification
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 import ipaddress
 
@@ -8528,9 +8528,9 @@ except Exception as e:
 
 
 # =========================
-# v0.1.11: issue check back to Management tab
+# 관리 탭 문제 점검 위치 정리
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 _V0110_JS = r"""
 function renderIssueRowsForManage(issues) {
@@ -8594,7 +8594,7 @@ try:
     INDEX_HTML = INDEX_HTML.replace('</script>', _V0110_JS + '\n</script>')
 except Exception as e:
     try:
-        append_log(f"INDEX_HTML v0.1.11 관리 탭 점검 이동 실패: {e}")
+        append_log(f"INDEX_HTML 관리 탭 점검 이동 실패: {e}")
     except Exception:
         pass
 
@@ -8603,7 +8603,7 @@ except Exception as e:
 # =========================
 # v0.1.12: 모바일 주소/상태 조회 캐시로 화면 속도 개선
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 _MOBILE_ADDRESS_CACHE = {
     "at": 0.0,
     "port": None,
@@ -8677,9 +8677,9 @@ except NameError:
 
 
 # =========================
-# v0.1.13: 화면 속도 개선 캐시
+# v0.1.14: 화면 속도 개선 캐시
 # =========================
-LOCALREADLOG_VERSION = "v0.1.13"
+LOCALREADLOG_VERSION = "v0.1.14"
 
 try:
     _LRL_CACHE_LOCK
@@ -8835,6 +8835,1686 @@ except NameError:
             _lrl_clear_fast_caches()
 
     Handler.do_POST = _v013_cache_do_POST
+
+
+# =========================
+# v0.1.14: 화수 없는 방문기록은 최신 화수로 기록하지 않음
+# =========================
+def _lrl_valid_episode_text(value):
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    try:
+        n = float(text)
+    except Exception:
+        return ""
+    if n <= 0:
+        return ""
+    if n.is_integer():
+        return str(int(n))
+    return str(n)
+
+
+def _lrl_drop_invalid_episode_fields(item):
+    if not isinstance(item, dict):
+        return item
+
+    item["latest_episode"] = _lrl_valid_episode_text(item.get("latest_episode", ""))
+    item["locked_episode"] = _lrl_valid_episode_text(item.get("locked_episode", ""))
+
+    cleaned_history = {}
+    history = item.get("episode_history", {}) or {}
+    if isinstance(history, dict):
+        for ep, record in history.items():
+            ep_key = _lrl_valid_episode_text(ep) or _lrl_valid_episode_text((record or {}).get("episode", "") if isinstance(record, dict) else "")
+            if not ep_key:
+                continue
+            if isinstance(record, dict):
+                rec = dict(record)
+                rec["episode"] = ep_key
+                cleaned_history[ep_key] = rec
+    item["episode_history"] = cleaned_history
+
+    blocked = []
+    for ep in item.get("blocked_episodes", []) or []:
+        ep_key = _lrl_valid_episode_text(ep)
+        if ep_key:
+            blocked.append(ep_key)
+    item["blocked_episodes"] = blocked
+
+    return item
+
+try:
+    _prev_normalize_item_strict_episode_v014
+except NameError:
+    _prev_normalize_item_strict_episode_v014 = normalize_item
+
+    def normalize_item(item):
+        return _lrl_drop_invalid_episode_fields(_prev_normalize_item_strict_episode_v014(item))
+
+try:
+    _prev_item_to_row_strict_episode_v014
+except NameError:
+    _prev_item_to_row_strict_episode_v014 = item_to_row
+
+    def item_to_row(item):
+        row = _prev_item_to_row_strict_episode_v014(item)
+        row["latest_episode"] = _lrl_valid_episode_text(row.get("latest_episode", ""))
+        row["locked_episode"] = _lrl_valid_episode_text(row.get("locked_episode", ""))
+        return row
+
+try:
+    _prev_save_db_strict_episode_v014
+except NameError:
+    _prev_save_db_strict_episode_v014 = save_db
+
+    def save_db(db):
+        try:
+            for item in (db.get("items", {}) or {}).values():
+                if isinstance(item, dict):
+                    _lrl_drop_invalid_episode_fields(item)
+        except Exception:
+            pass
+        return _prev_save_db_strict_episode_v014(db)
+
+
+
+# =========================
+# v0.1.21: blank episode rows + generic numbered domain defaults
+# =========================
+LOCALREADLOG_VERSION = "v0.1.21"
+
+try:
+    DEFAULT_SITE_SPECS.setdefault("sbxh", {
+        "label": "SBXH",
+        "prefix": "sbxh",
+        "host_re": r"sbxh\d+\.com",
+        "enabled": True,
+        "dynamic": True,
+        "category": "other",
+    })
+except Exception:
+    pass
+
+try:
+    if "sbxh" not in FORCE_LATEST_HOSTS:
+        FORCE_LATEST_HOSTS["sbxh"] = ""
+except Exception:
+    pass
+
+try:
+    _prev_normalize_site_specs_v021
+except NameError:
+    _prev_normalize_site_specs_v021 = normalize_site_specs
+
+    def normalize_site_specs(raw_sites):
+        sites = _prev_normalize_site_specs_v021(raw_sites)
+        sites.setdefault("sbxh", {
+            "label": "SBXH",
+            "prefix": "sbxh",
+            "host_re": r"sbxh\d+\.com",
+            "enabled": True,
+            "dynamic": True,
+            "category": "other",
+        })
+        return sites
+
+try:
+    SITE_SPECS = normalize_site_specs(SITE_SPECS)
+except Exception:
+    pass
+
+try:
+    _prev_get_issue_rows_blank_episode_ok_v021
+except NameError:
+    _prev_get_issue_rows_blank_episode_ok_v021 = get_issue_rows
+
+    def get_issue_rows():
+        rows = _prev_get_issue_rows_blank_episode_ok_v021()
+        return [row for row in rows if str(row.get("issue", "")) != "화수 없음"]
+
+try:
+    _prev_get_recent_rows_blank_episode_v021
+except NameError:
+    _prev_get_recent_rows_blank_episode_v021 = get_recent_rows
+
+    def get_recent_rows(limit=10):
+        rows = get_rows_by_status("active")
+        rows = sorted(rows, key=lambda r: str(r.get("last_seen", "")), reverse=True)
+        return rows[:max(1, min(int(limit), 100))]
+
+try:
+    _prev_get_rows_by_status_blank_episode_v021
+except NameError:
+    _prev_get_rows_by_status_blank_episode_v021 = get_rows_by_status
+
+    def get_rows_by_status(status):
+        rows = _prev_get_rows_by_status_blank_episode_v021(status)
+        for row in rows:
+            if isinstance(row, dict):
+                row["latest_episode"] = _lrl_valid_episode_text(row.get("latest_episode", ""))
+        return rows
+
+# 현재/삭제 목록 버튼 줄과 빈 화수 표시를 최종 UI에서 보정.
+_V021_JS = r'''
+function lrlEpisodeText(ep) {
+    const value = String(ep || '').trim();
+    return value ? value + '화' : '';
+}
+function lrlActionButtons(r, encodedTitle) {
+    if (mode === 'current') {
+        return `
+            <button class="edit" onclick="openEpisodePicker('${encodedTitle}')">화수선택</button>
+            <button class="category-edit" onclick="editCategory('${encodedTitle}')">분류</button>
+            <button class="edit" onclick="editTitleOnly('${encodedTitle}')">제목수정</button>
+            <button class="danger" onclick="deleteTitle('${encodedTitle}')">삭제</button>
+        `;
+    }
+    return `
+        <button class="edit" onclick="openEpisodePicker('${encodedTitle}')">화수선택</button>
+        <button class="category-edit" onclick="editCategory('${encodedTitle}')">분류</button>
+        <button class="edit" onclick="editTitleOnly('${encodedTitle}')">제목수정</button>
+        <button class="restore" onclick="restoreTitle('${encodedTitle}')">복구</button>
+        <button class="purge" onclick="purgeTitle('${encodedTitle}')">완전삭제</button>
+    `;
+}
+function render() {
+    const q = search.value.trim().toLowerCase();
+    let filtered = rows.filter(r => {
+        const text = `${r.title || ''} ${(r.aliases || []).join(' ')} ${r.latest_episode || ''} ${r.last_seen || ''} ${r.category_label || ''}`.toLowerCase();
+        return !q || text.includes(q);
+    });
+
+    filtered = sortedRows(filtered);
+    count.textContent = `${filtered.length}개 표시 / 전체 ${rows.length}개`;
+
+    if (!filtered.length) {
+        list.innerHTML = '<div class="empty">표시할 항목 없음</div>';
+        return;
+    }
+
+    list.innerHTML = bulkToolbar() + filtered.map((r, idx) => {
+        const displayTitle = stripSitePrefixFromTitle(r.title || '');
+        const title = escapeHtml(displayTitle || r.title || '');
+        const siteTag = escapeHtml(r.site_label || r.site || '사이트');
+        const categoryTag = escapeHtml(r.category_label || r.category || '기타');
+        const encodedTitle = encodeURIComponent(r.title || '');
+        const epText = lrlEpisodeText(r.latest_episode || '');
+        const epTag = epText ? `<span class="ep-tag">${escapeHtml(epText)}</span>` : '';
+        const lastSeen = escapeHtml(r.last_seen || '');
+        const url = escapeHtml(r.url || '');
+        const histCount = (r.episode_history || []).length;
+        const lockedText = r.locked_episode ? lrlEpisodeText(r.locked_episode) : '';
+        const lockText = r.locked_episode ? `<div class="locked-note">선택 고정: ${escapeHtml(lockedText)} · 저장된 화수 ${histCount}개</div>` : `<div class="aliases">저장된 화수: ${histCount}개</div>`;
+        const duplicateText = r.hidden_duplicate_count
+            ? `<div class="aliases">사이트 중복 ${escapeHtml(r.hidden_duplicate_count)}개 숨김: ${escapeHtml((r.hidden_duplicate_sites || []).join(', '))}</div>`
+            : '';
+        const openButton = r.url ? `<a href="${url}" target="_blank">열기</a>` : '';
+        const actionButtons = lrlActionButtons(r, encodedTitle);
+        const checkbox = `<label class="row-check"><input class="row-select" type="checkbox" value="${escapeHtml(r.title || '')}"> 선택</label>`;
+
+        return `
+        <div class="card">
+            <div class="title-line">
+                <div class="title-wrap">
+                    <span class="site-tag">${siteTag}</span>
+                    <span class="category-tag">${categoryTag}</span>
+                    <div class="title">${title}</div>
+                    ${epTag}
+                </div>
+            </div>
+            ${lockText}
+            ${duplicateText}
+            <div class="meta">
+                <span>최근: ${lastSeen || '-'}</span>
+            </div>
+            <div class="buttons">
+                ${checkbox}
+                ${openButton}
+                ${actionButtons}
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+'''
+try:
+    INDEX_HTML = INDEX_HTML.replace('</script>', _V021_JS + '\n</script>')
+except Exception as e:
+    try:
+        append_log(f"INDEX_HTML v0.1.21 UI 보정 실패: {e}")
+    except Exception:
+        pass
+
+
+
+# =========================
+# v0.1.22: 설정 탭 사이트 이름 수정 + 사이트 기본분류 현재 목록 반영
+# =========================
+LOCALREADLOG_VERSION = "v0.1.22"
+
+
+def _lrl_effective_category_for_item(item):
+    # 수동 분류가 아니면 현재 사이트 설정을 반영한 표시 분류를 계산한다.
+    item = dict(item or {})
+    manual = item.get("manual", {}) if isinstance(item.get("manual", {}), dict) else {}
+
+    if manual.get("category"):
+        return normalize_category(item.get("category", "other"))
+
+    inferred = infer_category_from_text(
+        item.get("url", ""),
+        item.get("__removed_link__", ""),
+        item.get("title", ""),
+    )
+    if inferred != "other":
+        return inferred
+
+    return site_default_category(item_site_key(item))
+
+
+try:
+    _prev_item_to_row_site_settings_v022
+except NameError:
+    _prev_item_to_row_site_settings_v022 = item_to_row
+
+    def item_to_row(item):
+        row = _prev_item_to_row_site_settings_v022(item)
+        try:
+            site_key = row.get("site") or item_site_key(item)
+            row["site"] = site_key
+            row["site_label"] = site_label(site_key)
+
+            category_key = _lrl_effective_category_for_item(item)
+            row["category"] = category_key
+            row["category_label"] = CATEGORY_LABELS.get(category_key, "기타")
+        except Exception:
+            pass
+        return row
+
+
+def set_site_label(site_key, label):
+    db = ensure_db()
+    db = normalize_settings(db)
+
+    site_key = str(site_key or "").strip()
+    label = clean_title(label)
+
+    if not label:
+        return False, "사이트 이름이 비어 있음"
+
+    sites = db.setdefault("settings", {}).setdefault("sites", {})
+    if site_key not in sites:
+        return False, "사이트를 못 찾음"
+
+    old_label = sites[site_key].get("label", site_key)
+    sites[site_key]["label"] = label
+    sync_global_site_specs(db)
+    save_db(db)
+
+    try:
+        _lrl_clear_fast_caches()
+    except Exception:
+        pass
+
+    append_log(f"사이트 이름 변경: {old_label} → {label}")
+    return True, f"사이트 이름 변경: {label}"
+
+
+try:
+    _prev_set_site_category_v022
+except NameError:
+    _prev_set_site_category_v022 = set_site_category
+
+    def set_site_category(site_key, category):
+        db = ensure_db()
+        db = normalize_settings(db)
+
+        site_key = str(site_key or "").strip()
+        sites = db.setdefault("settings", {}).setdefault("sites", {})
+
+        if site_key not in sites:
+            return False, "사이트를 못 찾음"
+
+        category_key = normalize_category(category)
+        old_category = normalize_category(sites[site_key].get("category", "other"))
+        sites[site_key]["category"] = category_key
+        sync_global_site_specs(db)
+
+        affected = 0
+        changed = 0
+        for key, item in list((db.get("items", {}) or {}).items()):
+            if not isinstance(item, dict):
+                continue
+            try:
+                if item_site_key(item) != site_key:
+                    continue
+                old_item_category = normalize_category(item.get("category", "other"))
+                item = normalize_item(item)
+                manual = item.get("manual", {}) if isinstance(item.get("manual", {}), dict) else {}
+                if manual.get("category"):
+                    continue
+
+                new_item_category = _lrl_effective_category_for_item(item)
+                item["category"] = new_item_category
+                item["updated_at"] = now_text()
+                db["items"][key] = item
+                affected += 1
+                if old_item_category != new_item_category:
+                    changed += 1
+            except Exception:
+                continue
+
+        save_db(db)
+        sync_txt_from_db(db)
+
+        try:
+            _lrl_clear_fast_caches()
+        except Exception:
+            pass
+
+        label = sites[site_key].get("label", site_key)
+        append_log(
+            f"사이트 기본분류 변경: {label} / "
+            f"{CATEGORY_LABELS.get(old_category, old_category)} → {CATEGORY_LABELS.get(category_key, category_key)} / "
+            f"현재 목록 갱신 대상 {affected}개 / 실제 변경 {changed}개"
+        )
+        return True, f"사이트 기본분류: {CATEGORY_LABELS.get(category_key, '기타')} · 현재 목록 갱신 대상 {affected}개"
+
+
+try:
+    _prev_handler_post_v022_site_settings
+except NameError:
+    _prev_handler_post_v022_site_settings = Handler.do_POST
+
+    def _v022_site_settings_do_POST(self):
+        path = urlparse(self.path).path
+        if path == "/api/set_site_label":
+            if '_protected' in globals() and not _protected(self):
+                return
+
+            val = _read_urlencoded_form(self) if '_read_urlencoded_form' in globals() else None
+            if val is None:
+                length = int(self.headers.get("Content-Length", "0") or "0")
+                body = self.rfile.read(length).decode("utf-8", errors="replace")
+                form = parse_qs(body)
+                val = lambda name: (form.get(name) or [""])[0]
+
+            ok, msg = set_site_label(val("site"), val("label"))
+            json_response(self, {"ok": ok, "message": msg}, status=200 if ok else 400)
+            return
+
+        return _prev_handler_post_v022_site_settings(self)
+
+    Handler.do_POST = _v022_site_settings_do_POST
+
+
+_V022_JS = r'''
+function lrlSiteEntriesInPriorityOrder() {
+    const sites = settings.sites || {};
+    const priority = Array.isArray(settings.site_priority) ? settings.site_priority : [];
+    const result = [];
+    const seen = new Set();
+    priority.forEach(key => {
+        if (sites[key] && !seen.has(key)) {
+            seen.add(key);
+            result.push([key, sites[key]]);
+        }
+    });
+    Object.entries(sites).forEach(([key, site]) => {
+        if (!seen.has(key)) result.push([key, site]);
+    });
+    return result;
+}
+
+async function editSiteLabel(encodedKey) {
+    const key = decodeURIComponent(encodedKey);
+    const site = settings.sites?.[key] || {};
+    const current = site.label || key;
+    const input = prompt('사이트 표시 이름 입력', current);
+    if (input === null) return;
+    const label = input.trim();
+    if (!label) {
+        showToast('사이트 이름이 비어 있음');
+        return;
+    }
+    const data = await api('/api/set_site_label', {site: key, label});
+    showToast(data.message || '사이트 이름 저장 완료');
+    await loadSettings();
+    if (mode === 'settings') renderSettingsPage();
+    else await reloadList();
+}
+
+async function setSiteCategory(encodedKey) {
+    const key = decodeURIComponent(encodedKey);
+    const site = settings.sites?.[key] || {};
+    const input = categoryPrompt(site.category || 'other');
+    if (input === null || !input) return;
+    const data = await api('/api/set_site_category', {site: key, category: input});
+    showToast(data.message || '사이트 기본분류 저장 완료');
+    await loadSettings();
+    if (mode === 'settings') renderSettingsPage();
+    else await reloadList();
+}
+
+function renderSettingsPage() {
+    renderSettings();
+    controls.style.display = 'none';
+    prioritybar.style.display = 'none';
+    if (browserbar) browserbar.style.display = 'none';
+
+    const siteEntries = lrlSiteEntriesInPriorityOrder();
+    const priorityLabels = (settings.site_priority || []).map(k => settings.sites?.[k]?.label || settings.site_labels?.[k] || k);
+
+    const siteRows = siteEntries.map(([key, site]) => {
+        const enabled = site.enabled !== false;
+        const host = site.host_re || site.prefix || key;
+        const removable = key !== 'blacktoon';
+        const catLabel = settings.category_labels?.[site.category || 'other'] || site.category || '기타';
+        return `
+            <div class="setting-row site-setting-row">
+                <div>
+                    <b>${escapeHtml(site.label || key)}</b>
+                    <div class="small">${escapeHtml(key)} · ${escapeHtml(host)} · 기본분류 ${escapeHtml(catLabel)}</div>
+                </div>
+                <button class="${enabled ? '' : 'off'}" onclick="toggleSiteEnabled('${encodeURIComponent(key)}')">${enabled ? 'ON' : 'OFF'}</button>
+                <button onclick="editSiteLabel('${encodeURIComponent(key)}')">이름</button>
+                <button onclick="setSiteCategory('${encodeURIComponent(key)}')">분류</button>
+                ${removable ? `<button class="danger" onclick="removeSite('${encodeURIComponent(key)}')">삭제</button>` : '<span></span>'}
+            </div>
+        `;
+    }).join('');
+
+    const browserRows = Object.entries(settings.browser_labels || {}).map(([key, label]) => {
+        const enabled = !!settings.browser_enabled?.[key];
+        return `
+            <div class="setting-row">
+                <div><b>${escapeHtml(label)}</b></div>
+                <button class="${enabled ? '' : 'off'}" onclick="toggleBrowserSync('${key}')">${enabled ? 'ON' : 'OFF'}</button>
+                <span></span>
+                <span></span>
+            </div>
+        `;
+    }).join('');
+
+    const addressBlock = (typeof renderAddressBox === 'function') ? renderAddressBox() : '';
+    const autoUpdateBlock = (typeof renderAutoUpdateBox === 'function') ? renderAutoUpdateBox() : '';
+    const runtimeBlock = (typeof renderRuntimeStatusBox === 'function') ? renderRuntimeStatusBox() : '';
+
+    count.textContent = '설정';
+    list.innerHTML = `
+        <div class="settings-box">
+            <h2>사이트</h2>
+            <div class="small">주소를 입력해서 추적 사이트를 추가함. 사이트 이름과 기본분류는 여기서 수정함.</div>
+            <div style="height:8px"></div>
+            <button onclick="addSite()">사이트 추가</button>
+            <div style="height:10px"></div>
+            ${siteRows || '<div class="empty">등록된 사이트 없음</div>'}
+        </div>
+
+        <div class="settings-box">
+            <h2>사이트 우선순위</h2>
+            <div class="small">위아래로 드래그해서 순서를 바꾼 뒤 저장. 현재: ${escapeHtml(priorityLabels.join(' > '))}</div>
+            <div id="priorityList" class="priority-list">${renderPriorityRows()}</div>
+            <button onclick="saveDraggedSitePriority()">우선순위 저장</button>
+            <button onclick="toggleDuplicateHiding()">중복숨김 ${settings.hide_site_duplicates ? 'ON' : 'OFF'}</button>
+        </div>
+
+        ${addressBlock}
+        ${autoUpdateBlock}
+
+        <div class="settings-box">
+            <h2>접속 비밀번호</h2>
+            <div class="small">모바일/다른 기기에서 접속할 때는 비밀번호 사용을 권장함. 공유기 외부 포트포워딩은 권장하지 않음.</div>
+            <div class="setting-row">
+                <div><b>비밀번호 보호</b><div class="small">현재 상태: ${settings.password_enabled ? 'ON' : 'OFF'}</div></div>
+                <button class="${settings.password_enabled ? '' : 'off'}" onclick="toggleAccessPassword()">${settings.password_enabled ? 'ON' : 'OFF'}</button>
+                <button onclick="changeAccessPassword()">변경</button>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="settings-box"><h2>브라우저 연동</h2>${browserRows}</div>
+
+        ${runtimeBlock}
+    `;
+}
+'''
+
+try:
+    INDEX_HTML = INDEX_HTML.replace('</style>', '\n.site-setting-row{grid-template-columns:1fr 72px 72px 72px 72px}.site-setting-row span{display:block}\n@media(max-width:700px){.site-setting-row{grid-template-columns:1fr 62px 62px 62px 62px}.site-setting-row button{padding-left:4px;padding-right:4px;font-size:11px}}\n</style>')
+    INDEX_HTML = INDEX_HTML.replace('</script>', _V022_JS + '\n</script>')
+except Exception as e:
+    try:
+        append_log(f"INDEX_HTML v0.1.22 사이트 설정 UI 보강 실패: {e}")
+    except Exception:
+        pass
+
+# =========================
+# v0.1.23: 목록 페이지네이션 + 오래된 순 정렬
+# =========================
+LOCALREADLOG_VERSION = "v0.1.23"
+
+_V023_JS = r'''
+let lrlPage = 1;
+let lrlPageSize = 100;
+let lrlLastFilterKey = '';
+
+function lrlEnsurePaginationControls() {
+    if (!controls || document.getElementById('pageSize')) return;
+
+    const pageSize = document.createElement('select');
+    pageSize.id = 'pageSize';
+    pageSize.innerHTML = `
+        <option value="50">50개씩</option>
+        <option value="100" selected>100개씩</option>
+        <option value="200">200개씩</option>
+        <option value="500">500개씩</option>
+        <option value="0">전체</option>
+    `;
+    pageSize.addEventListener('change', () => {
+        lrlPageSize = Number(pageSize.value || 100);
+        lrlPage = 1;
+        render();
+    });
+    controls.appendChild(pageSize);
+
+    const pager = document.createElement('div');
+    pager.id = 'pager';
+    pager.className = 'pager';
+    const top = document.querySelector('.top');
+    if (top && count) {
+        top.insertBefore(pager, count.nextSibling);
+    }
+}
+
+function lrlEnsureOldSortOption() {
+    if (!sort) return;
+
+    const oldUpdated = [...sort.options].find(opt => opt.value === 'updated_desc');
+    if (oldUpdated) {
+        oldUpdated.value = 'last_seen_asc';
+        oldUpdated.textContent = '오래된 순';
+    }
+
+    if (![...sort.options].some(opt => opt.value === 'updated_desc')) {
+        const opt = document.createElement('option');
+        opt.value = 'updated_desc';
+        opt.textContent = '수정일 최신순';
+        sort.appendChild(opt);
+    }
+
+    if (![...sort.options].some(opt => opt.value === 'updated_asc')) {
+        const opt = document.createElement('option');
+        opt.value = 'updated_asc';
+        opt.textContent = '수정일 오래된순';
+        sort.appendChild(opt);
+    }
+}
+
+function lrlResetPageIfFilterChanged(q, s) {
+    const key = `${mode}|${q}|${s}|${lrlPageSize}`;
+    if (key !== lrlLastFilterKey) {
+        lrlPage = 1;
+        lrlLastFilterKey = key;
+    }
+}
+
+function lrlPageRows(input) {
+    const size = Number(lrlPageSize || 0);
+    if (!size || size <= 0) {
+        return {pageRows: input, totalPages: 1, start: input.length ? 1 : 0, end: input.length};
+    }
+
+    const totalPages = Math.max(1, Math.ceil(input.length / size));
+    if (lrlPage > totalPages) lrlPage = totalPages;
+    if (lrlPage < 1) lrlPage = 1;
+
+    const startIndex = (lrlPage - 1) * size;
+    const endIndex = Math.min(startIndex + size, input.length);
+    return {
+        pageRows: input.slice(startIndex, endIndex),
+        totalPages,
+        start: input.length ? startIndex + 1 : 0,
+        end: endIndex
+    };
+}
+
+function lrlRenderPager(totalRows, totalPages, start, end) {
+    lrlEnsurePaginationControls();
+    const pager = document.getElementById('pager');
+    if (!pager) return;
+
+    if (!totalRows || totalPages <= 1) {
+        pager.innerHTML = '';
+        pager.style.display = 'none';
+        return;
+    }
+
+    pager.style.display = 'grid';
+    const pageButtons = [];
+    const candidates = new Set([1, lrlPage - 2, lrlPage - 1, lrlPage, lrlPage + 1, lrlPage + 2, totalPages]);
+    [...candidates]
+        .filter(n => n >= 1 && n <= totalPages)
+        .sort((a, b) => a - b)
+        .forEach((n, idx, arr) => {
+            if (idx > 0 && n - arr[idx - 1] > 1) {
+                pageButtons.push(`<span class="pager-gap">...</span>`);
+            }
+            pageButtons.push(`<button class="${n === lrlPage ? 'active' : ''}" onclick="lrlGoPage(${n})">${n}</button>`);
+        });
+
+    pager.innerHTML = `
+        <button onclick="lrlGoPage(${Math.max(1, lrlPage - 1)})" ${lrlPage <= 1 ? 'disabled' : ''}>이전</button>
+        <div class="pager-pages">${pageButtons.join('')}</div>
+        <button onclick="lrlGoPage(${Math.min(totalPages, lrlPage + 1)})" ${lrlPage >= totalPages ? 'disabled' : ''}>다음</button>
+        <div class="pager-info">${start}-${end} / ${totalRows}</div>
+    `;
+}
+
+function lrlGoPage(page) {
+    lrlPage = Number(page || 1);
+    render();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+const lrlPrevSetModeV023 = setMode;
+setMode = function(nextMode) {
+    lrlPage = 1;
+    lrlLastFilterKey = '';
+    return lrlPrevSetModeV023(nextMode);
+};
+
+function sortedRows(input) {
+    const s = sort.value;
+    const copy = [...input];
+
+    if (s === 'title_asc') {
+        copy.sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'ko'));
+    } else if (s === 'episode_desc') {
+        copy.sort((a, b) => epNum(b.latest_episode) - epNum(a.latest_episode));
+    } else if (s === 'updated_desc') {
+        copy.sort((a, b) => String(b.updated_at || '').localeCompare(String(a.updated_at || '')));
+    } else if (s === 'updated_asc') {
+        copy.sort((a, b) => String(a.updated_at || '').localeCompare(String(b.updated_at || '')));
+    } else if (s === 'last_seen_asc') {
+        copy.sort((a, b) => String(a.last_seen || '').localeCompare(String(b.last_seen || '')));
+    } else {
+        copy.sort((a, b) => String(b.last_seen || '').localeCompare(String(a.last_seen || '')));
+    }
+
+    return copy;
+}
+
+
+function bulkToolbar() {
+    if (!rows.length) return '';
+    const restoreBtn = mode === 'deleted'
+        ? `<button class="restore" onclick="bulkAction('restore')">선택 복구</button><button class="purge" onclick="bulkAction('purge')">선택 완전삭제</button>`
+        : `<button class="danger" onclick="bulkAction('delete')">선택 삭제</button>`;
+    return `<div class="settings-box bulk-box"><h2>현재 페이지 선택 처리</h2><div class="buttons"><button onclick="toggleAllRows(true)">현재페이지 전체선택</button><button onclick="toggleAllRows(false)">선택해제</button>${restoreBtn}<button class="edit" onclick="bulkCategory()">선택 분류변경</button></div></div>`;
+}
+
+function render() {
+    lrlEnsurePaginationControls();
+    lrlEnsureOldSortOption();
+
+    const q = search.value.trim().toLowerCase();
+    const s = sort.value;
+    lrlResetPageIfFilterChanged(q, s);
+
+    let filtered = rows.filter(r => {
+        const text = `${r.title || ''} ${(r.aliases || []).join(' ')} ${r.latest_episode || ''} ${r.last_seen || ''} ${r.updated_at || ''} ${r.category_label || ''}`.toLowerCase();
+        return !q || text.includes(q);
+    });
+
+    filtered = sortedRows(filtered);
+    const pageData = lrlPageRows(filtered);
+
+    count.textContent = `${filtered.length}개 표시 / 전체 ${rows.length}개` + (filtered.length ? ` · ${pageData.start}-${pageData.end}번째` : '');
+    lrlRenderPager(filtered.length, pageData.totalPages, pageData.start, pageData.end);
+
+    if (!filtered.length) {
+        list.innerHTML = '<div class="empty">표시할 항목 없음</div>';
+        return;
+    }
+
+    list.innerHTML = bulkToolbar() + pageData.pageRows.map((r, idx) => {
+        const displayTitle = stripSitePrefixFromTitle(r.title || '');
+        const title = escapeHtml(displayTitle || r.title || '');
+        const siteTag = escapeHtml(r.site_label || r.site || '사이트');
+        const categoryTag = escapeHtml(r.category_label || r.category || '기타');
+        const encodedTitle = encodeURIComponent(r.title || '');
+        const epText = lrlEpisodeText(r.latest_episode || '');
+        const epTag = epText ? `<span class="ep-tag">${escapeHtml(epText)}</span>` : '';
+        const lastSeen = escapeHtml(r.last_seen || '');
+        const updatedAt = escapeHtml(r.updated_at || '');
+        const url = escapeHtml(r.url || '');
+        const histCount = (r.episode_history || []).length;
+        const lockedText = r.locked_episode ? lrlEpisodeText(r.locked_episode) : '';
+        const lockText = r.locked_episode ? `<div class="locked-note">선택 고정: ${escapeHtml(lockedText)} · 저장된 화수 ${histCount}개</div>` : `<div class="aliases">저장된 화수: ${histCount}개</div>`;
+        const duplicateText = r.hidden_duplicate_count
+            ? `<div class="aliases">사이트 중복 ${escapeHtml(r.hidden_duplicate_count)}개 숨김: ${escapeHtml((r.hidden_duplicate_sites || []).join(', '))}</div>`
+            : '';
+        const openButton = r.url ? `<a href="${url}" target="_blank">열기</a>` : '';
+        const actionButtons = lrlActionButtons(r, encodedTitle);
+        const checkbox = `<label class="row-check"><input class="row-select" type="checkbox" value="${escapeHtml(r.title || '')}"> 선택</label>`;
+
+        return `
+        <div class="card">
+            <div class="title-line">
+                <div class="title-wrap">
+                    <span class="site-tag">${siteTag}</span>
+                    <span class="category-tag">${categoryTag}</span>
+                    <div class="title">${title}</div>
+                    ${epTag}
+                </div>
+            </div>
+            ${lockText}
+            ${duplicateText}
+            <div class="meta">
+                <span>최근: ${lastSeen || '-'}</span>
+                <span>수정: ${updatedAt || '-'}</span>
+            </div>
+            <div class="buttons">
+                ${checkbox}
+                ${openButton}
+                ${actionButtons}
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
+// v0.1.24에서 정렬/페이지/분류 컨트롤을 최종 초기화함.
+'''
+
+try:
+    INDEX_HTML = INDEX_HTML.replace('</style>', '''
+#pageSize {
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 15px;
+}
+.pager {
+    display: none;
+    grid-template-columns: 66px 1fr 66px;
+    gap: 8px;
+    align-items: center;
+    margin: 8px 0;
+}
+.pager button {
+    border: 0;
+    padding: 9px 6px;
+    border-radius: 9px;
+    background: #222;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 12px;
+}
+.pager button:disabled {
+    background: #bbb;
+    cursor: default;
+}
+.pager button.active {
+    background: #1f4e79;
+}
+.pager-pages {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.pager-info {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    font-weight: 800;
+}
+.pager-gap {
+    padding: 7px 2px;
+    color: #777;
+    font-weight: 900;
+}
+@media (min-width: 620px) {
+    .controls {
+        grid-template-columns: 1fr 145px 105px;
+    }
+}
+@media (max-width: 619px) {
+    .controls {
+        grid-template-columns: 1fr 1fr;
+    }
+    #search {
+        grid-column: 1 / -1;
+    }
+    .pager {
+        grid-template-columns: 58px 1fr 58px;
+    }
+}
+</style>''')
+    INDEX_HTML = INDEX_HTML.replace('</script>', _V023_JS + '\n</script>')
+except Exception as e:
+    try:
+        append_log(f"INDEX_HTML v0.1.23 페이지네이션 UI 보강 실패: {e}")
+    except Exception:
+        pass
+
+
+# =========================
+# v0.1.24: 정렬 옵션 중복 정리 + 분류별 보기
+# =========================
+LOCALREADLOG_VERSION = "v0.1.24"
+
+_V024_JS = r'''
+const LRL_CATEGORY_OPTIONS = [
+    ['all', '전체 분류'],
+    ['webtoon', '웹툰'],
+    ['comic', '만화'],
+    ['manga', '망가'],
+    ['novel', '소설'],
+    ['anime', '애니'],
+    ['other', '기타']
+];
+
+function lrlNormalizeSortOptions() {
+    if (!sort) return;
+    const current = sort.value || localStorage.getItem('lrl.sort') || 'last_seen_desc';
+    const fixed = [
+        ['last_seen_desc', '최근 본 순'],
+        ['last_seen_asc', '오래된 순'],
+        ['title_asc', '제목 순'],
+        ['episode_desc', '화수 높은 순'],
+        ['updated_desc', '수정일 최신순'],
+        ['updated_asc', '수정일 오래된순']
+    ];
+    sort.innerHTML = fixed.map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
+    sort.value = fixed.some(([value]) => value === current) ? current : 'last_seen_desc';
+}
+
+function lrlEnsureOldSortOption() {
+    lrlNormalizeSortOptions();
+}
+
+function lrlEnsurePaginationControls() {
+    if (!controls) return;
+
+    let categoryFilter = document.getElementById('categoryFilter');
+    if (!categoryFilter) {
+        categoryFilter = document.createElement('select');
+        categoryFilter.id = 'categoryFilter';
+        const savedCategory = localStorage.getItem('lrl.categoryFilter') || 'all';
+        categoryFilter.innerHTML = LRL_CATEGORY_OPTIONS
+            .map(([value, label]) => `<option value="${value}">${label}</option>`)
+            .join('');
+        categoryFilter.value = LRL_CATEGORY_OPTIONS.some(([value]) => value === savedCategory) ? savedCategory : 'all';
+        categoryFilter.onchange = () => {
+            try { localStorage.setItem('lrl.categoryFilter', categoryFilter.value); } catch(e) {}
+            lrlPage = 1;
+            render();
+        };
+        controls.appendChild(categoryFilter);
+    } else {
+        categoryFilter.onchange = () => {
+            try { localStorage.setItem('lrl.categoryFilter', categoryFilter.value); } catch(e) {}
+            lrlPage = 1;
+            render();
+        };
+    }
+
+    let pageSize = document.getElementById('pageSize');
+    if (!pageSize) {
+        pageSize = document.createElement('select');
+        pageSize.id = 'pageSize';
+        const savedSize = localStorage.getItem('lrl.pageSize') || String(lrlPageSize || 100);
+        pageSize.innerHTML = `
+            <option value="50">50개씩</option>
+            <option value="100">100개씩</option>
+            <option value="200">200개씩</option>
+            <option value="500">500개씩</option>
+            <option value="0">전체</option>
+        `;
+        pageSize.value = ['50', '100', '200', '500', '0'].includes(savedSize) ? savedSize : '100';
+        lrlPageSize = Number(pageSize.value || 100);
+        pageSize.onchange = () => {
+            lrlPageSize = Number(pageSize.value || 100);
+            try { localStorage.setItem('lrl.pageSize', pageSize.value); } catch(e) {}
+            lrlPage = 1;
+            render();
+        };
+        controls.appendChild(pageSize);
+    } else {
+        pageSize.onchange = () => {
+            lrlPageSize = Number(pageSize.value || 100);
+            try { localStorage.setItem('lrl.pageSize', pageSize.value); } catch(e) {}
+            lrlPage = 1;
+            render();
+        };
+    }
+
+    let pager = document.getElementById('pager');
+    if (!pager) {
+        pager = document.createElement('div');
+        pager.id = 'pager';
+        pager.className = 'pager';
+        const top = document.querySelector('.top');
+        if (top && count) top.insertBefore(pager, count.nextSibling);
+    }
+}
+
+function lrlCurrentCategoryFilter() {
+    const el = document.getElementById('categoryFilter');
+    return el ? (el.value || 'all') : 'all';
+}
+
+function lrlResetPageIfFilterChanged(q, s, c) {
+    const key = `${mode}|${q}|${s}|${c}|${lrlPageSize}`;
+    if (key !== lrlLastFilterKey) {
+        lrlPage = 1;
+        lrlLastFilterKey = key;
+    }
+}
+
+function render() {
+    lrlEnsurePaginationControls();
+    lrlEnsureOldSortOption();
+
+    const q = search.value.trim().toLowerCase();
+    const s = sort.value;
+    const c = lrlCurrentCategoryFilter();
+    lrlResetPageIfFilterChanged(q, s, c);
+
+    let filtered = rows.filter(r => {
+        const rowCategory = String(r.category || 'other');
+        if (c !== 'all' && rowCategory !== c) return false;
+        const text = `${r.title || ''} ${(r.aliases || []).join(' ')} ${r.latest_episode || ''} ${r.last_seen || ''} ${r.updated_at || ''} ${r.category_label || ''}`.toLowerCase();
+        return !q || text.includes(q);
+    });
+
+    filtered = sortedRows(filtered);
+    const pageData = lrlPageRows(filtered);
+    const categoryLabel = c === 'all'
+        ? ''
+        : ` · ${escapeHtml((settings.category_labels || {})[c] || c)}`;
+
+    count.textContent = `${filtered.length}개 표시 / 전체 ${rows.length}개${categoryLabel}` + (filtered.length ? ` · ${pageData.start}-${pageData.end}번째` : '');
+    lrlRenderPager(filtered.length, pageData.totalPages, pageData.start, pageData.end);
+
+    if (!filtered.length) {
+        list.innerHTML = '<div class="empty">표시할 항목 없음</div>';
+        return;
+    }
+
+    list.innerHTML = bulkToolbar() + pageData.pageRows.map((r, idx) => {
+        const displayTitle = stripSitePrefixFromTitle(r.title || '');
+        const title = escapeHtml(displayTitle || r.title || '');
+        const siteTag = escapeHtml(r.site_label || r.site || '사이트');
+        const categoryTag = escapeHtml(r.category_label || r.category || '기타');
+        const encodedTitle = encodeURIComponent(r.title || '');
+        const epText = lrlEpisodeText(r.latest_episode || '');
+        const epTag = epText ? `<span class="ep-tag">${escapeHtml(epText)}</span>` : '';
+        const lastSeen = escapeHtml(r.last_seen || '');
+        const updatedAt = escapeHtml(r.updated_at || '');
+        const url = escapeHtml(r.url || '');
+        const histCount = (r.episode_history || []).length;
+        const lockedText = r.locked_episode ? lrlEpisodeText(r.locked_episode) : '';
+        const lockText = r.locked_episode ? `<div class="locked-note">선택 고정: ${escapeHtml(lockedText)} · 저장된 화수 ${histCount}개</div>` : `<div class="aliases">저장된 화수: ${histCount}개</div>`;
+        const duplicateText = r.hidden_duplicate_count
+            ? `<div class="aliases">사이트 중복 ${escapeHtml(r.hidden_duplicate_count)}개 숨김: ${escapeHtml((r.hidden_duplicate_sites || []).join(', '))}</div>`
+            : '';
+        const openButton = r.url ? `<a href="${url}" target="_blank">열기</a>` : '';
+        const actionButtons = lrlActionButtons(r, encodedTitle);
+        const checkbox = `<label class="row-check"><input class="row-select" type="checkbox" value="${escapeHtml(r.title || '')}"> 선택</label>`;
+
+        return `
+        <div class="card">
+            <div class="title-line">
+                <div class="title-wrap">
+                    <span class="site-tag">${siteTag}</span>
+                    <span class="category-tag">${categoryTag}</span>
+                    <div class="title">${title}</div>
+                    ${epTag}
+                </div>
+            </div>
+            ${lockText}
+            ${duplicateText}
+            <div class="meta">
+                <span>최근: ${lastSeen || '-'}</span>
+                <span>수정: ${updatedAt || '-'}</span>
+            </div>
+            <div class="buttons">
+                ${checkbox}
+                ${openButton}
+                ${actionButtons}
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
+lrlNormalizeSortOptions();
+lrlEnsurePaginationControls();
+'''
+
+try:
+    INDEX_HTML = INDEX_HTML.replace('</style>', '''
+#categoryFilter,
+#pageSize {
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 15px;
+    background: white;
+}
+@media (min-width: 620px) {
+    .controls {
+        grid-template-columns: 1fr 145px 120px 105px;
+    }
+}
+@media (max-width: 619px) {
+    .controls {
+        grid-template-columns: 1fr 1fr;
+    }
+    #search {
+        grid-column: 1 / -1;
+    }
+}
+</style>''')
+    INDEX_HTML = INDEX_HTML.replace('</script>', _V024_JS + '\n</script>')
+except Exception as e:
+    try:
+        append_log(f"INDEX_HTML v0.1.24 정렬/분류 필터 보강 실패: {e}")
+    except Exception:
+        pass
+
+
+# =========================
+# v0.1.25: 분류 드롭다운 변경 + 분류 관리 + 설정 사이트 분류 필터
+# =========================
+LOCALREADLOG_VERSION = "v0.1.26"
+
+try:
+    DEFAULT_CATEGORY_LABELS_V025
+except NameError:
+    DEFAULT_CATEGORY_LABELS_V025 = dict(CATEGORY_LABELS)
+    DEFAULT_CATEGORY_ALIASES_V025 = dict(CATEGORY_ALIASES)
+
+
+def _lrl_category_key_from_label(label):
+    label = clean_title(label)
+    if not label:
+        return ""
+    base = re.sub(r"[^a-z0-9_]+", "_", label.strip().lower())
+    base = re.sub(r"_+", "_", base).strip("_")
+    if not base:
+        digest = hashlib.md5(label.encode("utf-8", errors="ignore")).hexdigest()[:10]
+        base = f"custom_{digest}"
+    if base in ["all", "none", "null", "undefined"]:
+        base = f"category_{base}"
+    return base[:48] or "other"
+
+
+def _lrl_merge_category_labels(raw_labels=None):
+    labels = dict(DEFAULT_CATEGORY_LABELS_V025)
+    if isinstance(raw_labels, dict):
+        for raw_key, raw_label in raw_labels.items():
+            label = clean_title(raw_label)
+            if not label:
+                continue
+            key = _lrl_category_key_from_label(raw_key) or _lrl_category_key_from_label(label)
+            if not key:
+                continue
+            labels[key] = label
+    return labels
+
+
+def _lrl_sync_category_globals(db=None):
+    global CATEGORY_LABELS, CATEGORY_ALIASES
+    raw_labels = None
+    if isinstance(db, dict):
+        raw_labels = db.get("settings", {}).get("category_labels")
+    labels = _lrl_merge_category_labels(raw_labels)
+
+    CATEGORY_LABELS.clear()
+    CATEGORY_LABELS.update(labels)
+
+    CATEGORY_ALIASES.clear()
+    CATEGORY_ALIASES.update(DEFAULT_CATEGORY_ALIASES_V025)
+    for key, label in labels.items():
+        CATEGORY_ALIASES[str(key).lower()] = key
+        CATEGORY_ALIASES[str(label).strip().lower()] = key
+
+    return labels
+
+
+try:
+    _prev_normalize_category_v025
+except NameError:
+    _prev_normalize_category_v025 = normalize_category
+
+    def normalize_category(value):
+        raw = str(value or "").strip()
+        if not raw:
+            return "other"
+
+        token = raw.lower()
+        if token in CATEGORY_LABELS:
+            return token
+        if token in CATEGORY_ALIASES:
+            return CATEGORY_ALIASES[token]
+
+        for key, label in CATEGORY_LABELS.items():
+            if token == str(label or "").strip().lower():
+                return key
+
+        key = _lrl_category_key_from_label(raw)
+        if key in CATEGORY_LABELS:
+            return key
+
+        # 이미 저장된 사용자 분류 키는 DB 정규화 과정에서 기타로 덮어쓰지 않도록 보존한다.
+        if re.fullmatch(r"[a-z0-9_]{3,64}", token) and token not in {"all", "none", "null"}:
+            return token
+
+        return "other"
+
+
+try:
+    _prev_normalize_settings_v025
+except NameError:
+    _prev_normalize_settings_v025 = normalize_settings
+
+    def normalize_settings(db):
+        db = _prev_normalize_settings_v025(db)
+        settings = db.setdefault("settings", {})
+        labels = _lrl_merge_category_labels(settings.get("category_labels"))
+        settings["category_labels"] = labels
+        _lrl_sync_category_globals(db)
+        return db
+
+
+try:
+    _prev_get_settings_payload_v025
+except NameError:
+    _prev_get_settings_payload_v025 = get_settings_payload
+
+    def get_settings_payload():
+        payload = _prev_get_settings_payload_v025()
+        try:
+            db = ensure_db()
+            db = normalize_settings(db)
+            labels = _lrl_sync_category_globals(db)
+            payload["category_labels"] = dict(labels)
+            payload["sites"] = db.get("settings", {}).get("sites", SITE_SPECS)
+            payload["site_labels"] = {k: v.get("label", k) for k, v in SITE_SPECS.items()}
+        except Exception:
+            payload["category_labels"] = dict(CATEGORY_LABELS)
+        return payload
+
+
+def add_category_label(label):
+    db = ensure_db()
+    db = normalize_settings(db)
+    label = clean_title(label)
+    if not label:
+        return False, "분류 이름이 비어 있음", ""
+
+    settings = db.setdefault("settings", {})
+    labels = settings.setdefault("category_labels", _lrl_merge_category_labels())
+
+    for key, old_label in labels.items():
+        if str(old_label).strip().lower() == label.lower():
+            return True, f"이미 있는 분류: {old_label}", key
+
+    key = _lrl_category_key_from_label(label)
+    base = key
+    idx = 2
+    while key in labels:
+        key = f"{base}_{idx}"
+        idx += 1
+
+    labels[key] = label
+    settings["category_labels"] = _lrl_merge_category_labels(labels)
+    _lrl_sync_category_globals(db)
+    save_db(db)
+    append_log(f"분류 추가: {label} ({key})")
+    return True, f"분류 추가: {label}", key
+
+
+def set_category_label(category_key, label):
+    db = ensure_db()
+    db = normalize_settings(db)
+    label = clean_title(label)
+    if not label:
+        return False, "분류 이름이 비어 있음"
+
+    settings = db.setdefault("settings", {})
+    labels = settings.setdefault("category_labels", _lrl_merge_category_labels())
+    key = normalize_category(category_key)
+    if key not in labels:
+        key = _lrl_category_key_from_label(category_key)
+    if key not in labels:
+        return False, "분류를 못 찾음"
+
+    for other_key, other_label in labels.items():
+        if other_key != key and str(other_label).strip().lower() == label.lower():
+            return False, "이미 같은 이름의 분류가 있음"
+
+    old_label = labels.get(key, key)
+    labels[key] = label
+    settings["category_labels"] = _lrl_merge_category_labels(labels)
+    _lrl_sync_category_globals(db)
+    save_db(db)
+    append_log(f"분류 이름 변경: {old_label} → {label}")
+    return True, f"분류 이름 변경: {label}"
+
+
+try:
+    _prev_handler_post_v025_category_settings
+except NameError:
+    _prev_handler_post_v025_category_settings = Handler.do_POST
+
+    def _v025_category_settings_do_POST(self):
+        path = urlparse(self.path).path
+        if path in ["/api/add_category", "/api/set_category_label"]:
+            if '_protected' in globals() and not _protected(self):
+                return
+
+            val = _read_urlencoded_form(self) if '_read_urlencoded_form' in globals() else None
+            if val is None:
+                length = int(self.headers.get("Content-Length", "0") or "0")
+                body = self.rfile.read(length).decode("utf-8", errors="replace")
+                form = parse_qs(body)
+                val = lambda name: (form.get(name) or [""])[0]
+
+            if path == "/api/add_category":
+                ok, msg, key = add_category_label(val("label"))
+                json_response(self, {"ok": ok, "message": msg, "key": key, "category_labels": dict(CATEGORY_LABELS)}, status=200 if ok else 400)
+                return
+
+            ok, msg = set_category_label(val("category"), val("label"))
+            json_response(self, {"ok": ok, "message": msg, "category_labels": dict(CATEGORY_LABELS)}, status=200 if ok else 400)
+            return
+
+        return _prev_handler_post_v025_category_settings(self)
+
+    Handler.do_POST = _v025_category_settings_do_POST
+
+
+_V025_JS = r'''
+const LRL_DEFAULT_CATEGORY_ORDER_V025 = ['webtoon', 'comic', 'manga', 'novel', 'anime', 'other'];
+
+function lrlCategoryEntries(includeAll=false) {
+    const labels = settings.category_labels || {};
+    const result = [];
+    if (includeAll) result.push(['all', '전체 분류']);
+    const seen = new Set();
+    LRL_DEFAULT_CATEGORY_ORDER_V025.forEach(key => {
+        if (Object.prototype.hasOwnProperty.call(labels, key)) {
+            result.push([key, labels[key] || key]);
+            seen.add(key);
+        }
+    });
+    Object.entries(labels)
+        .filter(([key]) => !seen.has(key))
+        .sort((a, b) => String(a[1] || a[0]).localeCompare(String(b[1] || b[0]), 'ko'))
+        .forEach(([key, label]) => result.push([key, label || key]));
+    return result;
+}
+
+function lrlCategoryOptionsHtml(selected, includeAll=false) {
+    const current = String(selected || (includeAll ? 'all' : 'other'));
+    return lrlCategoryEntries(includeAll).map(([key, label]) => {
+        const selectedAttr = String(key) === current ? ' selected' : '';
+        return `<option value="${escapeHtml(key)}"${selectedAttr}>${escapeHtml(label)}</option>`;
+    }).join('');
+}
+
+function lrlCategoryLabel(key) {
+    return (settings.category_labels || {})[key] || key || '기타';
+}
+
+function lrlEnsurePaginationControls() {
+    if (!controls) return;
+
+    let categoryFilter = document.getElementById('categoryFilter');
+    const savedCategory = localStorage.getItem('lrl.categoryFilter') || (categoryFilter ? categoryFilter.value : 'all') || 'all';
+    if (!categoryFilter) {
+        categoryFilter = document.createElement('select');
+        categoryFilter.id = 'categoryFilter';
+        controls.appendChild(categoryFilter);
+    }
+    categoryFilter.innerHTML = lrlCategoryOptionsHtml(savedCategory, true);
+    categoryFilter.value = lrlCategoryEntries(true).some(([value]) => value === savedCategory) ? savedCategory : 'all';
+    categoryFilter.onchange = () => {
+        try { localStorage.setItem('lrl.categoryFilter', categoryFilter.value); } catch(e) {}
+        lrlPage = 1;
+        render();
+    };
+
+    let pageSize = document.getElementById('pageSize');
+    if (!pageSize) {
+        pageSize = document.createElement('select');
+        pageSize.id = 'pageSize';
+        controls.appendChild(pageSize);
+    }
+    const savedSize = localStorage.getItem('lrl.pageSize') || String(lrlPageSize || 100);
+    pageSize.innerHTML = `
+        <option value="50">50개씩</option>
+        <option value="100">100개씩</option>
+        <option value="200">200개씩</option>
+        <option value="500">500개씩</option>
+        <option value="0">전체</option>
+    `;
+    pageSize.value = ['50', '100', '200', '500', '0'].includes(savedSize) ? savedSize : '100';
+    lrlPageSize = Number(pageSize.value || 100);
+    pageSize.onchange = () => {
+        lrlPageSize = Number(pageSize.value || 100);
+        try { localStorage.setItem('lrl.pageSize', pageSize.value); } catch(e) {}
+        lrlPage = 1;
+        render();
+    };
+
+    let pager = document.getElementById('pager');
+    if (!pager) {
+        pager = document.createElement('div');
+        pager.id = 'pager';
+        pager.className = 'pager';
+        const top = document.querySelector('.top');
+        if (top && count) top.insertBefore(pager, count.nextSibling);
+    }
+}
+
+function lrlItemCategorySelect(encodedTitle, currentCategory) {
+    return `<select class="category-edit category-select" title="분류" onchange="changeItemCategoryFromSelect('${encodedTitle}', this.value)">${lrlCategoryOptionsHtml(currentCategory || 'other', false)}</select>`;
+}
+
+function lrlSiteCategorySelect(encodedKey, currentCategory) {
+    return `<select class="category-edit category-select site-category-select" title="사이트 기본분류" onchange="changeSiteCategoryFromSelect('${encodedKey}', this.value)">${lrlCategoryOptionsHtml(currentCategory || 'other', false)}</select>`;
+}
+
+async function changeItemCategoryFromSelect(encodedTitle, category) {
+    const title = decodeURIComponent(encodedTitle);
+    if (!category) return;
+    const data = await api('/api/set_category', {title, category});
+    showToast(data.message || '분류 변경 완료');
+    await reloadList();
+}
+
+async function changeSiteCategoryFromSelect(encodedKey, category) {
+    const key = decodeURIComponent(encodedKey);
+    if (!category) return;
+    const data = await api('/api/set_site_category', {site: key, category});
+    showToast(data.message || '사이트 기본분류 저장 완료');
+    await loadSettings();
+    if (mode === 'settings') renderSettingsPage();
+    else await reloadList();
+}
+
+async function editCategory(encodedTitle) {
+    showToast('분류는 목록의 드롭다운에서 선택해서 바꿔라');
+}
+
+async function setSiteCategory(encodedKey) {
+    showToast('사이트 분류는 설정 탭의 드롭다운에서 선택해서 바꿔라');
+}
+
+function lrlActionButtons(r, encodedTitle) {
+    const categorySelect = lrlItemCategorySelect(encodedTitle, r.category || 'other');
+    if (mode === 'current') {
+        return `
+            <button class="edit" onclick="openEpisodePicker('${encodedTitle}')">화수선택</button>
+            ${categorySelect}
+            <button class="edit" onclick="editTitleOnly('${encodedTitle}')">제목수정</button>
+            <button class="danger" onclick="deleteTitle('${encodedTitle}')">삭제</button>
+        `;
+    }
+    return `
+        <button class="edit" onclick="openEpisodePicker('${encodedTitle}')">화수선택</button>
+        ${categorySelect}
+        <button class="edit" onclick="editTitleOnly('${encodedTitle}')">제목수정</button>
+        <button class="restore" onclick="restoreTitle('${encodedTitle}')">복구</button>
+        <button class="purge" onclick="purgeTitle('${encodedTitle}')">완전삭제</button>
+    `;
+}
+
+function bulkToolbar() {
+    if (!(mode === 'current' || mode === 'deleted')) return '';
+    const restoreBtn = mode === 'deleted'
+        ? `<button class="restore" onclick="bulkAction('restore')">선택 복구</button><button class="purge" onclick="bulkAction('purge')">선택 완전삭제</button>`
+        : `<button class="danger" onclick="bulkAction('delete')">선택 삭제</button>`;
+    return `<div class="settings-box bulk-box"><h2>현재 페이지 선택 처리</h2><div class="buttons"><button onclick="toggleAllRows(true)">현재페이지 전체선택</button><button onclick="toggleAllRows(false)">선택해제</button>${restoreBtn}<select id="bulkCategorySelect" class="category-edit category-select" title="선택 분류">${lrlCategoryOptionsHtml('comic', false)}</select><button class="edit" onclick="bulkCategory()">선택 분류변경</button></div></div>`;
+}
+
+async function bulkCategory() {
+    const titles = selectedTitles();
+    if (!titles.length) { showToast('선택된 항목 없음'); return; }
+    const select = document.getElementById('bulkCategorySelect');
+    const category = select ? select.value : '';
+    if (!category) { showToast('분류를 선택해라'); return; }
+    const data = await api('/api/bulk_action', {action:'category', titles: JSON.stringify(titles), category});
+    showToast(data.message || '분류 변경 완료');
+    await reloadList();
+}
+
+function lrlRenderCategoryManagerBox() {
+    const rows = lrlCategoryEntries(false).map(([key, label]) => `
+        <div class="setting-row category-setting-row">
+            <div><b>${escapeHtml(label)}</b><div class="small">${escapeHtml(key)}</div></div>
+            <button onclick="editCategoryLabel('${encodeURIComponent(key)}')">수정</button>
+        </div>
+    `).join('');
+    return `
+        <div class="settings-box">
+            <h2>분류 관리</h2>
+            <div class="small">여기서 추가·수정한 분류는 현재 목록, 삭제 목록, 사이트 기본분류 선택에 같이 반영됨.</div>
+            <div style="height:8px"></div>
+            <button onclick="addCategoryLabel()">분류 추가</button>
+            <div style="height:10px"></div>
+            ${rows || '<div class="empty">등록된 분류 없음</div>'}
+        </div>
+    `;
+}
+
+async function addCategoryLabel() {
+    const input = prompt('추가할 분류 이름 입력', '');
+    if (input === null) return;
+    const label = input.trim();
+    if (!label) { showToast('분류 이름이 비어 있음'); return; }
+    const data = await api('/api/add_category', {label});
+    showToast(data.message || '분류 추가 완료');
+    await loadSettings();
+    renderSettingsPage();
+}
+
+async function editCategoryLabel(encodedKey) {
+    const key = decodeURIComponent(encodedKey);
+    const current = lrlCategoryLabel(key);
+    const input = prompt('분류 이름 수정', current);
+    if (input === null) return;
+    const label = input.trim();
+    if (!label) { showToast('분류 이름이 비어 있음'); return; }
+    const data = await api('/api/set_category_label', {category: key, label});
+    showToast(data.message || '분류 이름 저장 완료');
+    await loadSettings();
+    renderSettingsPage();
+}
+
+function lrlSiteCategoryFilterValue() {
+    const el = document.getElementById('settingsSiteCategoryFilter');
+    return el ? (el.value || 'all') : (localStorage.getItem('lrl.settingsSiteCategoryFilter') || 'all');
+}
+
+function lrlSettingsSiteFilterHtml(current) {
+    return `<select id="settingsSiteCategoryFilter" class="settings-site-filter" onchange="try{localStorage.setItem('lrl.settingsSiteCategoryFilter', this.value)}catch(e){}; renderSettingsPage()">${lrlCategoryOptionsHtml(current || 'all', true)}</select>`;
+}
+
+function renderSettingsPage() {
+    renderSettings();
+    controls.style.display = 'none';
+    prioritybar.style.display = 'none';
+    if (browserbar) browserbar.style.display = 'none';
+
+    const siteEntries = lrlSiteEntriesInPriorityOrder();
+    const priorityLabels = (settings.site_priority || []).map(k => settings.sites?.[k]?.label || settings.site_labels?.[k] || k);
+    const siteCategoryFilter = lrlSiteCategoryFilterValue();
+    const filteredSiteEntries = siteEntries.filter(([key, site]) => {
+        const cat = String(site?.category || 'other');
+        return siteCategoryFilter === 'all' || cat === siteCategoryFilter;
+    });
+
+    const siteRows = filteredSiteEntries.map(([key, site]) => {
+        const enabled = site.enabled !== false;
+        const host = site.host_re || site.prefix || key;
+        const removable = key !== 'blacktoon';
+        const catLabel = lrlCategoryLabel(site.category || 'other');
+        return `
+            <div class="setting-row site-setting-row">
+                <div>
+                    <b>${escapeHtml(site.label || key)}</b>
+                    <div class="small">${escapeHtml(key)} · ${escapeHtml(host)} · 기본분류 ${escapeHtml(catLabel)}</div>
+                </div>
+                <button class="${enabled ? '' : 'off'}" onclick="toggleSiteEnabled('${encodeURIComponent(key)}')">${enabled ? 'ON' : 'OFF'}</button>
+                <button onclick="editSiteLabel('${encodeURIComponent(key)}')">이름</button>
+                ${lrlSiteCategorySelect(encodeURIComponent(key), site.category || 'other')}
+                ${removable ? `<button class="danger" onclick="removeSite('${encodeURIComponent(key)}')">삭제</button>` : '<span></span>'}
+            </div>
+        `;
+    }).join('');
+
+    const browserRows = Object.entries(settings.browser_labels || {}).map(([key, label]) => {
+        const enabled = !!settings.browser_enabled?.[key];
+        return `
+            <div class="setting-row">
+                <div><b>${escapeHtml(label)}</b></div>
+                <button class="${enabled ? '' : 'off'}" onclick="toggleBrowserSync('${key}')">${enabled ? 'ON' : 'OFF'}</button>
+                <span></span>
+                <span></span>
+            </div>
+        `;
+    }).join('');
+
+    const addressBlock = (typeof renderAddressBox === 'function') ? renderAddressBox() : '';
+    const autoUpdateBlock = (typeof renderAutoUpdateBox === 'function') ? renderAutoUpdateBox() : '';
+    const runtimeBlock = (typeof renderRuntimeStatusBox === 'function') ? renderRuntimeStatusBox() : '';
+
+    count.textContent = '설정';
+    list.innerHTML = `
+        <div class="settings-box">
+            <h2>사이트</h2>
+            <div class="small">주소를 입력해서 추적 사이트를 추가함. 사이트 이름과 기본분류는 여기서 수정함.</div>
+            <div style="height:8px"></div>
+            <button onclick="addSite()">사이트 추가</button>
+            ${lrlSettingsSiteFilterHtml(siteCategoryFilter)}
+            <div style="height:10px"></div>
+            ${siteRows || '<div class="empty">해당 분류의 사이트 없음</div>'}
+        </div>
+
+        ${lrlRenderCategoryManagerBox()}
+
+        <div class="settings-box">
+            <h2>사이트 우선순위</h2>
+            <div class="small">위아래로 드래그해서 순서를 바꾼 뒤 저장. 현재: ${escapeHtml(priorityLabels.join(' > '))}</div>
+            <div id="priorityList" class="priority-list">${renderPriorityRows()}</div>
+            <button onclick="saveDraggedSitePriority()">우선순위 저장</button>
+            <button onclick="toggleDuplicateHiding()">중복숨김 ${settings.hide_site_duplicates ? 'ON' : 'OFF'}</button>
+        </div>
+
+        ${addressBlock}
+        ${autoUpdateBlock}
+
+        <div class="settings-box">
+            <h2>접속 비밀번호</h2>
+            <div class="small">모바일/다른 기기에서 접속할 때는 비밀번호 사용을 권장함. 공유기 외부 포트포워딩은 권장하지 않음.</div>
+            <div class="setting-row">
+                <div><b>비밀번호 보호</b><div class="small">현재 상태: ${settings.password_enabled ? 'ON' : 'OFF'}</div></div>
+                <button class="${settings.password_enabled ? '' : 'off'}" onclick="toggleAccessPassword()">${settings.password_enabled ? 'ON' : 'OFF'}</button>
+                <button onclick="changeAccessPassword()">변경</button>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="settings-box"><h2>브라우저 연동</h2>${browserRows}</div>
+
+        ${runtimeBlock}
+    `;
+}
+
+// 설정을 다시 읽은 뒤 동적 분류 옵션으로 컨트롤을 다시 그림.
+lrlEnsurePaginationControls();
+'''
+
+try:
+    INDEX_HTML = INDEX_HTML.replace('</style>', '''
+.category-select,
+.settings-site-filter {
+    box-sizing: border-box;
+    width: 100%;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 6px;
+    background: #1f4e79;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: center;
+    text-align-last: center;
+}
+.category-select option,
+.settings-site-filter option {
+    color: #111;
+    background: #fff;
+}
+.settings-site-filter {
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    background: white;
+    color: #111;
+    text-align-last: left;
+}
+.category-setting-row {
+    grid-template-columns: 1fr 80px;
+}
+.site-setting-row {
+    grid-template-columns: 1fr 72px 72px 105px 72px;
+}
+.site-setting-row span { display:block; }
+@media(max-width:700px){
+    .site-setting-row{grid-template-columns:1fr 58px 58px 92px 58px}
+    .site-setting-row button,.site-setting-row select{padding-left:3px;padding-right:3px;font-size:11px}
+}
+</style>''')
+    INDEX_HTML = INDEX_HTML.replace('</script>', _V025_JS + '\n</script>')
+except Exception as e:
+    try:
+        append_log(f"INDEX_HTML v0.1.25 분류 관리 UI 보강 실패: {e}")
+    except Exception:
+        pass
+
+
+# =========================
+# v0.1.26: v0.1.25 목록 빈 화면 긴급 수정
+# =========================
+LOCALREADLOG_VERSION = "v0.1.26"
+
+try:
+    # v0.1.24의 즉시 실행 초기화가 v0.1.25의 동적 분류 함수 선언으로 덮인 뒤
+    # v0.1.25 상수 초기화보다 먼저 실행되면 브라우저에서 ReferenceError가 나고
+    # 목록 전체가 빈 화면이 된다. 분류/페이지 컨트롤 초기화는 v0.1.25 끝부분에서
+    # 다시 수행되므로, 앞쪽 즉시 호출만 제거한다.
+    INDEX_HTML = INDEX_HTML.replace(
+        "lrlNormalizeSortOptions();\nlrlEnsurePaginationControls();\n\n\nconst LRL_DEFAULT_CATEGORY_ORDER_V025",
+        "lrlNormalizeSortOptions();\n// lrlEnsurePaginationControls는 v0.1.25 동적 분류 초기화 뒤에 실행\n\n\nconst LRL_DEFAULT_CATEGORY_ORDER_V025",
+    )
+except Exception as e:
+    try:
+        append_log(f"INDEX_HTML v0.1.26 목록 초기화 순서 보정 실패: {e}")
+    except Exception:
+        pass
 
 if __name__ == "__main__":
     main()

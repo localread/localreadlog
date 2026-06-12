@@ -2,7 +2,7 @@
 
 Windows 로컬에서 브라우저 방문기록을 읽어 웹툰/만화/소설/애니 최신 화수를 관리하는 도구입니다.
 
-현재 버전: **v0.1.13**
+현재 버전: **v0.1.21**
 
 ## 1. 먼저 압축 풀기
 
@@ -39,6 +39,8 @@ winget install -e --id Python.Python.3.12
 | 할 일 | 실행 파일 |
 |---|---|
 | 백그라운드 실행 | `01_Start_Background.vbs` |
+
+서버가 자동으로 열리지 않으면 `02_Run_With_Window_For_Error_Check.bat`를 실행해서 오류를 확인하세요.
 | 오류 확인용 실행 | `02_Run_With_Window_For_Error_Check.bat` |
 | Windows 시작 시 자동 실행 등록 | `03_Enable_Start_With_Windows.bat` |
 | 자동 실행 해제 | `04_Disable_Start_With_Windows.bat` |
@@ -70,6 +72,7 @@ http://127.0.0.1:28787
 
 - Whale / Edge / Chrome / Firefox 방문기록 스캔
 - 작품별 최신 화수 관리
+- 화수/장/회/챕터 번호가 없는 방문기록은 최신 화수로 기록하지 않음
 - 웹툰 / 만화 / 망가 / 소설 / 애니 / 기타 분류
 - 사이트 ON/OFF 및 우선순위 설정
 - 브라우저 ON/OFF 설정

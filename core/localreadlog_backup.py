@@ -1963,9 +1963,51 @@ def sync_all_episode_history_from_browser(rows, ignore_titles=None):
         print(f"DB 저장 링크 최신 도메인으로 정리: {format_latest_hosts(latest_hosts)}")
 
 
+
+def _lrl_live_latest_hosts_from_rows(items):
+    latest = {}
+    try:
+        for site_key, forced in (FORCE_LATEST_HOSTS or {}).items():
+            if forced:
+                latest[site_key] = forced.rstrip("/")
+    except Exception:
+        pass
+
+    max_nums = {}
+    for item in items or []:
+        if isinstance(item, dict):
+            url = item.get("url", "")
+            title = item.get("title") or item.get("clean_title") or item.get("raw_title") or ""
+        else:
+            url = str(item)
+            title = ""
+        if _lrl_history_title_is_connection_error(title):
+            continue
+        info = extract_tracked_host_info(url)
+        if not info:
+            continue
+        site_key, number = info
+        if number <= 0:
+            continue
+        spec = SITE_SPECS.get(site_key, {})
+        if not _site_is_dynamic(spec):
+            continue
+        if site_key in latest:
+            continue
+        if site_key not in max_nums or number > max_nums[site_key]:
+            max_nums[site_key] = number
+
+    for site_key, number in max_nums.items():
+        prefix = SITE_SPECS.get(site_key, {}).get("prefix", site_key)
+        latest[site_key] = f"https://{prefix}{number}.com"
+    return latest
+
 def build_latest_from_history(rows, ignore_titles=None):
+    global _LRL_OBSERVED_LIVE_HOSTS
     if ignore_titles is None:
         ignore_titles = set()
+
+    _LRL_OBSERVED_LIVE_HOSTS = _lrl_live_latest_hosts_from_rows(rows)
 
     series_titles = {}
 
@@ -4642,6 +4684,548 @@ except NameError:
     def save_manager_db(db):
         _make_db_backup_snapshot("before_save")
         return _prev_save_manager_db_v15(db)
+
+
+# =========================
+# v0.1.14: 화수 없는 방문기록은 최신 화수로 기록하지 않음
+# =========================
+def _lrl_valid_episode_text(value):
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    try:
+        n = float(text)
+    except Exception:
+        return ""
+    if n <= 0:
+        return ""
+    if n.is_integer():
+        return str(int(n))
+    return str(n)
+
+
+def _lrl_drop_invalid_episode_fields(item):
+    if not isinstance(item, dict):
+        return item
+
+    item["latest_episode"] = _lrl_valid_episode_text(item.get("latest_episode", ""))
+    item["locked_episode"] = _lrl_valid_episode_text(item.get("locked_episode", ""))
+
+    cleaned_history = {}
+    history = item.get("episode_history", {}) or {}
+    if isinstance(history, dict):
+        for ep, record in history.items():
+            ep_key = _lrl_valid_episode_text(ep) or _lrl_valid_episode_text((record or {}).get("episode", "") if isinstance(record, dict) else "")
+            if not ep_key:
+                continue
+            if isinstance(record, dict):
+                rec = dict(record)
+                rec["episode"] = ep_key
+                cleaned_history[ep_key] = rec
+    item["episode_history"] = cleaned_history
+
+    blocked = []
+    for ep in item.get("blocked_episodes", []) or []:
+        ep_key = _lrl_valid_episode_text(ep)
+        if ep_key:
+            blocked.append(ep_key)
+    item["blocked_episodes"] = blocked
+
+    return item
+
+try:
+    _prev_normalize_db_item_strict_episode_v014
+except NameError:
+    _prev_normalize_db_item_strict_episode_v014 = normalize_db_item
+
+    def normalize_db_item(item):
+        return _lrl_drop_invalid_episode_fields(_prev_normalize_db_item_strict_episode_v014(item))
+
+try:
+    _prev_extract_episode_page_info_strict_episode_v014
+except NameError:
+    _prev_extract_episode_page_info_strict_episode_v014 = extract_episode_page_info
+
+    def extract_episode_page_info(row, series_titles=None):
+        info = _prev_extract_episode_page_info_strict_episode_v014(row, series_titles)
+        if not info:
+            return None
+        ep = _lrl_valid_episode_text(info.get("latest_episode", ""))
+        if not ep:
+            return None
+        info = dict(info)
+        info["latest_episode"] = ep
+        return info
+
+try:
+    _prev_save_manager_db_strict_episode_v014
+except NameError:
+    _prev_save_manager_db_strict_episode_v014 = save_manager_db
+
+    def save_manager_db(db):
+        try:
+            for item in (db.get("items", {}) or {}).values():
+                if isinstance(item, dict):
+                    _lrl_drop_invalid_episode_fields(item)
+        except Exception:
+            pass
+        return _prev_save_manager_db_strict_episode_v014(db)
+
+
+
+# =========================
+# v0.1.21: confirmed episode parsing + generic numbered domains + blank episode detail rows
+# =========================
+_LRL_VERSION = "v0.1.21"
+_LRL_OBSERVED_LIVE_HOSTS = {}
+
+try:
+    DEFAULT_SITE_SPECS.setdefault("sbxh", {
+        "label": "SBXH",
+        "prefix": "sbxh",
+        "host_re": r"sbxh\d+\.com",
+        "enabled": True,
+        "dynamic": True,
+        "category": "other",
+    })
+except Exception:
+    pass
+
+try:
+    if "sbxh" not in FORCE_LATEST_HOSTS:
+        FORCE_LATEST_HOSTS["sbxh"] = ""
+except Exception:
+    pass
+
+try:
+    if "sbxh" not in SITE_NAME_ALIASES:
+        SITE_NAME_ALIASES["sbxh"] = "sbxh"
+except Exception:
+    pass
+
+try:
+    _prev_normalize_site_specs_v021
+except NameError:
+    _prev_normalize_site_specs_v021 = normalize_site_specs
+
+    def normalize_site_specs(raw_sites):
+        sites = _prev_normalize_site_specs_v021(raw_sites)
+        sites.setdefault("sbxh", {
+            "label": "SBXH",
+            "prefix": "sbxh",
+            "host_re": r"sbxh\d+\.com",
+            "enabled": True,
+            "dynamic": True,
+            "category": "other",
+        })
+        return sites
+
+try:
+    SITE_SPECS = normalize_site_specs(SITE_SPECS)
+except Exception:
+    pass
+
+
+def _lrl_history_title_is_connection_error(title):
+    t = str(title or "").strip().lower()
+    if not t:
+        return False
+    bad_parts = [
+        "접속할 수 없음", "사이트에 연결할 수 없음", "연결할 수 없음", "페이지를 열 수 없음",
+        "웹페이지를 사용할 수 없음", "문제 발생", "오류", "err_", "dns_probe", "timed out",
+        "this site can", "this site can't", "site can", "can't be reached", "cannot be reached",
+        "server ip address could not be found", "404 not found", "502 bad gateway",
+        "503 service unavailable", "504 gateway timeout",
+    ]
+    return any(x in t for x in bad_parts)
+
+
+def _lrl_format_episode_number(number_text):
+    number_text = str(number_text or "").strip()
+    try:
+        number = float(number_text)
+        if number <= 0:
+            return ""
+        if number.is_integer():
+            return str(int(number))
+        return str(number)
+    except Exception:
+        return number_text
+
+
+def parse_episode_number(title):
+    """
+    제목에 명확한 회차 표식이 있을 때만 화수로 인정한다.
+    URL의 긴 숫자/slug, 제목 끝 숫자, '오해 (2)' 같은 괄호 숫자는 회차로 쓰지 않는다.
+    """
+    title = clean_title(title)
+    if not title:
+        return ""
+
+    patterns = [
+        r"(?:제\s*)?(\d+(?:\.\d+)?)\s*(?:화|회|편|장|권)(?=$|[\s\-–—_:|/\\)\]】』》,，.。!！?？])",
+        r"(?:챕터|챕\.?)\s*[-_:：#.]?\s*(\d+(?:\.\d+)?)",
+        r"(?:chapter|chap\.?|ch\.?)\s*[-_:：#.]?\s*(\d+(?:\.\d+)?)\b",
+        r"(?:episode|ep\.?)\s*[-_:：#.]?\s*(\d+(?:\.\d+)?)\b",
+        r"(?:第)\s*(\d+(?:\.\d+)?)\s*(?:話|章)",
+        r"(\d+(?:\.\d+)?)\s*(?:話|章)(?=$|[\s\-–—_:|/\\)\]】』》,，.。!！?？])",
+    ]
+
+    found = []
+    for pattern in patterns:
+        for match in re.finditer(pattern, title, flags=re.I):
+            found.append((match.start(), match.group(1)))
+
+    if not found:
+        return ""
+
+    found.sort(key=lambda x: x[0])
+    return _lrl_format_episode_number(found[-1][1])
+
+
+def infer_series_title_from_episode_title(episode_title):
+    title = clean_title(episode_title)
+    title = re.sub(r"^\d{3,6}\s*[-–—]\s*", "", title)
+
+    remove_patterns = [
+        r"\s*[-–—_:：]?\s*(?:외전\s*)?(?:제\s*)?\d+(?:\.\d+)?\s*(?:화|회|편|장|권).*$",
+        r"\s*[-–—_:：]?\s*(?:챕터|챕\.?)\s*[-_:：#.]?\s*\d+(?:\.\d+)?.*$",
+        r"\s*[-–—_:：]?\s*(?:chapter|chap\.?|ch\.?|episode|ep\.?)\s*[-_:：#.]?\s*\d+(?:\.\d+)?.*$",
+        r"\s*[-–—_:：]?\s*(?:第)\s*\d+(?:\.\d+)?\s*(?:話|章).*$",
+        r"\s*[-–—_:：]?\s*\d+(?:\.\d+)?\s*(?:話|章).*$",
+    ]
+    for pattern in remove_patterns:
+        title = re.sub(pattern, "", title, flags=re.I).strip()
+
+    title = re.sub(r"\s*[-–—_:：]+\s*$", "", title).strip()
+    return title
+
+
+def _lrl_clean_page_title_for_series(title):
+    title = clean_title(title)
+    title = re.sub(r"\s*[|｜].*$", "", title).strip()
+    title = re.sub(r"\s*[-–—]\s*(?:SBXH|NewToki|뉴토끼|마나토끼|북토끼)\s*$", "", title, flags=re.I).strip()
+    return title
+
+
+def _lrl_series_title_from_title(title, latest_episode=""):
+    title = _lrl_clean_page_title_for_series(title)
+    if not title:
+        return ""
+    if latest_episode:
+        inferred = infer_series_title_from_episode_title(title)
+        if inferred:
+            return inferred
+    # 회차가 없으면 부제목을 화수처럼 쓰지 않는다. '작품명 - 부제'는 작품명만 사용.
+    parts = re.split(r"\s+[-–—]\s+", title, maxsplit=1)
+    if len(parts) >= 2 and parts[0].strip():
+        return parts[0].strip()
+    return title.strip()
+
+
+def _lrl_path_parts(url):
+    try:
+        parsed = urlparse(str(url or ""))
+        parts = [unquote(p) for p in parsed.path.strip("/").split("/") if p]
+        return parsed, parts
+    except Exception:
+        return None, []
+
+
+def _lrl_work_url_from_detail_url(url):
+    url = normalize_blacktoon_url(str(url or "").strip(), {}) if "normalize_blacktoon_url" in globals() else str(url or "").strip()
+    if not url:
+        return ""
+
+    episode_match = re.match(
+        r"^(https?://(?:www\.)?blacktoon\d+\.com)/webtoons/(\d+)/\d+\.html(?:[?#].*)?$",
+        url,
+        flags=re.I,
+    )
+    if episode_match:
+        return f"{episode_match.group(1)}/webtoon/{episode_match.group(2)}.html"
+
+    series_match = re.match(
+        r"^(https?://(?:www\.)?blacktoon\d+\.com/webtoon/\d+\.html)(?:[?#].*)?$",
+        url,
+        flags=re.I,
+    )
+    if series_match:
+        return series_match.group(1)
+
+    parsed, parts = _lrl_path_parts(url)
+    if not parsed or not parsed.scheme or not parsed.netloc:
+        return ""
+
+    if not parts:
+        return f"{parsed.scheme}://{parsed.netloc}/"
+
+    # ani.ohli24.com 같은 고정 도메인은 동적 숫자 도메인으로 오인하지 않고, 기존 /e -> /c 보정만 유지.
+    if len(parts) >= 2 and parts[0].lower() in ["e", "episode", "episodes"]:
+        title_part = _remove_episode_suffix_from_title(parts[1]) if "_remove_episode_suffix_from_title" in globals() else parts[1]
+        title_part = title_part or parts[1]
+        new_path = _encode_path_parts(["c", title_part]) if "_encode_path_parts" in globals() else "/c/" + quote(title_part, safe="")
+        return f"{parsed.scheme}://{parsed.netloc}{new_path}"
+
+    if len(parts) >= 2 and parts[0].lower() in ["c", "content", "contents"]:
+        return f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+
+    cat_idx, _cat = _category_index(parts) if "_category_index" in globals() else (None, "")
+
+    # /novel/작품ID/글ID, /manhwa/작품ID/slug 구조는 마지막 조각을 회차로 쓰지 않고 작품 주소만 만든다.
+    if cat_idx is not None and len(parts) >= cat_idx + 3:
+        new_parts = parts[:cat_idx + 2]
+        new_path = _encode_path_parts(new_parts) if "_encode_path_parts" in globals() else "/" + "/".join(quote(str(p), safe="") for p in new_parts)
+        return f"{parsed.scheme}://{parsed.netloc}{new_path}"
+
+    if len(parts) >= 2 and _segment_looks_episode(parts[-1]):
+        new_path = _encode_path_parts(parts[:-1]) if "_encode_path_parts" in globals() else "/" + "/".join(quote(str(p), safe="") for p in parts[:-1])
+        return f"{parsed.scheme}://{parsed.netloc}{new_path}"
+
+    return f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+
+
+def _lrl_path_is_content_detail_url(url):
+    parsed, parts = _lrl_path_parts(url)
+    if not parsed or not parts:
+        return False
+    cat_idx, _cat = _category_index(parts) if "_category_index" in globals() else (None, "")
+    return cat_idx is not None and len(parts) >= cat_idx + 3
+
+
+def _lrl_series_id_from_url(site_key, url, assume_episode=False):
+    work_url = _lrl_work_url_from_detail_url(url) if assume_episode else str(url or "")
+    if assume_episode and not work_url:
+        work_url = str(url or "")
+    try:
+        parsed = urlparse(work_url)
+        path = parsed.path.strip("/")
+    except Exception:
+        path = ""
+    if not path:
+        return f"{site_key}:root"
+    normalized = re.sub(r"[^0-9A-Za-z가-힣_./-]+", "_", unquote(path)).strip("_")
+    return f"{site_key}:url:{normalized or path}"
+
+
+def infer___removed_link___from_url(url):
+    # 이름은 레거시 호환용이다. work_url 필드를 저장하지 않기 위해 최종 저장 단계에서는 계속 제거된다.
+    return _lrl_work_url_from_detail_url(url)
+
+
+def get___removed_link__(url):
+    return ""
+
+
+def generic_series_id_from_url(site_key, url, assume_episode=False):
+    return _lrl_series_id_from_url(site_key, url, assume_episode)
+
+
+def extract_series_page_info(row):
+    url = row.get("url", "")
+    site_key = get_site_key(url)
+    if not site_key:
+        return None
+
+    title = _lrl_clean_page_title_for_series(row.get("clean_title", "") or row.get("raw_title", ""))
+    if is_bad_title(title) or _lrl_history_title_is_connection_error(title):
+        return None
+
+    work_url = _lrl_work_url_from_detail_url(url)
+    if not work_url:
+        return None
+
+    try:
+        # 상세 URL은 여기서 작품명 후보로만 쓰고, 실제 기록은 extract_episode_page_info에서 처리한다.
+        if urlparse(url).path.rstrip("/") != urlparse(work_url).path.rstrip("/"):
+            return None
+    except Exception:
+        return None
+
+    return {
+        "site": site_key,
+        "series_id": _lrl_series_id_from_url(site_key, work_url, assume_episode=False),
+        "title": display_title_for_site(site_key, title),
+        "__removed_link__": work_url,
+    }
+
+
+def extract_episode_page_info(row, series_titles=None):
+    if series_titles is None:
+        series_titles = {}
+
+    url = row.get("url", "")
+    site_key = get_site_key(url)
+    if not site_key:
+        return None
+
+    episode_title = clean_title(row.get("clean_title", "") or row.get("raw_title", ""))
+    if is_bad_title(episode_title) or _lrl_history_title_is_connection_error(episode_title):
+        return None
+
+    latest_episode = parse_episode_number(episode_title) or ""
+    is_detail_url = _lrl_path_is_content_detail_url(url)
+    work_url = _lrl_work_url_from_detail_url(url)
+
+    if not latest_episode and not is_detail_url:
+        return None
+
+    blacktoon_match = EPISODE_PAGE_RE.match(url)
+    if blacktoon_match and latest_episode:
+        series_id = f"{site_key}:id:{blacktoon_match.group(1)}"
+    else:
+        series_id = _lrl_series_id_from_url(site_key, url, assume_episode=True)
+
+    data = series_titles.get(series_id, {})
+    if isinstance(data, str):
+        data = {"title": data}
+
+    if blacktoon_match and latest_episode and looks_like_episode_only_title(episode_title):
+        title = data.get("title", "")
+    else:
+        title = data.get("title") or _lrl_series_title_from_title(episode_title, latest_episode)
+
+    if not title:
+        title = series_id.rsplit(":", 1)[-1] or "제목없음"
+
+    return {
+        "site": site_key,
+        "series_id": series_id,
+        "title": display_title_for_site(site_key, title),
+        "latest_episode": latest_episode,
+        "url": url,
+        "__removed_link__": data.get("__removed_link__") or work_url,
+        "category": infer_category_from_text(url, work_url, episode_title) if "infer_category_from_text" in globals() else "",
+    }
+
+
+def build_latest_from_history(rows, ignore_titles=None):
+    global _LRL_OBSERVED_LIVE_HOSTS
+    if ignore_titles is None:
+        ignore_titles = set()
+
+    _LRL_OBSERVED_LIVE_HOSTS = _lrl_live_latest_hosts_from_rows(rows)
+
+    series_titles = {}
+    for row in rows:
+        info = extract_series_page_info(row)
+        if not info:
+            continue
+        series_titles.setdefault(info["series_id"], {
+            "title": info.get("title", ""),
+            "__removed_link__": info.get("__removed_link__", ""),
+        })
+
+    latest_by_series = {}
+    total_episode_pages = 0
+    for row in rows:
+        info = extract_episode_page_info(row, series_titles)
+        if not info:
+            continue
+
+        total_episode_pages += 1
+        title = info["title"]
+        if is_ignored_title(title, ignore_titles):
+            continue
+
+        item = {
+            "title": title,
+            "latest_episode": info.get("latest_episode", ""),
+            "last_seen": row.get("last_seen", ""),
+            "url": info.get("url", ""),
+            "__removed_link__": info.get("__removed_link__", ""),
+            "category": info.get("category", "") or infer_category_from_text(info.get("url", ""), info.get("__removed_link__", ""), title),
+        }
+        old = latest_by_series.get(info["series_id"])
+        latest_by_series[info["series_id"]] = item if old is None else choose_better(old, item)
+
+    return latest_by_series, total_episode_pages
+
+try:
+    _prev_update_db_item_from_chosen_row_v021
+except NameError:
+    _prev_update_db_item_from_chosen_row_v021 = update_db_item_from_chosen_row
+
+    def update_db_item_from_chosen_row(item, row):
+        before_ep = db_episode_key((item or {}).get("latest_episode", ""))
+        row_ep = db_episode_key((row or {}).get("latest_episode", ""))
+        item = _prev_update_db_item_from_chosen_row_v021(item, row)
+        if not row_ep and not before_ep:
+            if row.get("last_seen"):
+                item["last_seen"] = str(row.get("last_seen", "") or item.get("last_seen", ""))
+            if row.get("url"):
+                item["url"] = str(row.get("url", "") or item.get("url", ""))
+            row_category = normalize_category(row.get("category", "")) if "normalize_category" in globals() else ""
+            if row_category and row_category != "other" and not item.get("manual", {}).get("category"):
+                item["category"] = row_category
+        return normalize_db_item(item)
+
+try:
+    _prev_apply_manager_db_rules_v021
+except NameError:
+    _prev_apply_manager_db_rules_v021 = apply_manager_db_rules
+
+    def apply_manager_db_rules(rows):
+        output = _prev_apply_manager_db_rules_v021(rows)
+        try:
+            db = load_manager_db()
+            db = normalize_db_settings(db)
+            existing = set()
+            for row in output:
+                key = make_merge_key(row) or db_title_key(row.get("title", ""))
+                if key:
+                    existing.add(key)
+            extra = []
+            for raw_item in (db.get("items", {}) or {}).values():
+                if not isinstance(raw_item, dict):
+                    continue
+                item = normalize_db_item(raw_item)
+                if item.get("status") != "active":
+                    continue
+                row = db_item_to_row(item)
+                if not row.get("title") or not row.get("url"):
+                    continue
+                key = make_merge_key(row) or db_title_key(row.get("title", ""))
+                if key in existing:
+                    continue
+                # 화수가 비어 있는 작품도 현재 목록에 남긴다.
+                extra.append(row)
+                existing.add(key)
+            if extra:
+                output = list(output) + extra
+                output = apply_site_duplicate_filter(output, db)
+        except Exception:
+            pass
+        return output
+
+try:
+    _prev_get_latest_host_from_items_v021
+except NameError:
+    _prev_get_latest_host_from_items_v021 = get_latest_blacktoon_host_from_items
+
+    def get_latest_blacktoon_host_from_items(items):
+        observed = dict(globals().get("_LRL_OBSERVED_LIVE_HOSTS", {}) or {})
+        if observed:
+            return observed
+        latest = _lrl_live_latest_hosts_from_rows(items)
+        return latest or _prev_get_latest_host_from_items_v021(items)
+
+try:
+    _prev_save_latest_pc_html_blank_episode_v021
+except NameError:
+    _prev_save_latest_pc_html_blank_episode_v021 = save_latest_pc_html
+
+    def save_latest_pc_html(rows):
+        result = _prev_save_latest_pc_html_blank_episode_v021(rows)
+        try:
+            for path in [LATEST_PC_HTML, LATEST_HTML]:
+                if path.exists():
+                    text = path.read_text(encoding="utf-8", errors="replace")
+                    text = text.replace(">화</td>", "></td>").replace("<span>화</span>", "<span></span>")
+                    path.write_text(text, encoding="utf-8")
+        except Exception:
+            pass
+        return result
 
 if __name__ == "__main__":
     main()
