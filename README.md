@@ -1,17 +1,5 @@
 ## 화면 예시
 
-스크린샷은 `docs/screenshots/` 폴더에 넣어주세요.
-
-```txt
-docs/
-└─ screenshots/
-   ├─ current-list.png
-   ├─ deleted-list.png
-   ├─ settings-sites.png
-   ├─ settings-categories.png
-   ├─ manage.png
-   └─ mobile-view.png
-```
 
 ### 현재 목록
 
