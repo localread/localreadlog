@@ -36,17 +36,19 @@ winget install -e --id Python.Python.3.12
 
 ## 3. 실행 파일
 
-| 할 일 | 실행 파일 |
-|---|---|
-| 백그라운드 실행 | `01_Start_Background.vbs` |
+| 할 일                   | 실행 파일                                          |
+| --------------------- | ---------------------------------------------- |
+| 백그라운드 실행              | `01_Start_Background.vbs`                      |
+| 오류 확인용 실행             | `02_Run_With_Window_For_Error_Check.bat`       |
+| Windows 시작 시 자동 실행 등록 | `03_Enable_Start_With_Windows.bat`             |
+| Windows 시작 시 자동 실행 해제 | `04_Disable_Start_With_Windows.bat`            |
+| 서버 종료                 | `05_Stop_Server.bat`                           |
+| 모바일 접속 방화벽 허용         | `06_Allow_Mobile_Access_Windows_Firewall.bat`  |
+| 모바일 접속 방화벽 허용 규칙 제거   | `07_Remove_Mobile_Access_Windows_Firewall.bat` |
 
-서버가 자동으로 열리지 않으면 `02_Run_With_Window_For_Error_Check.bat`를 실행해서 오류를 확인하세요.
-| 오류 확인용 실행 | `02_Run_With_Window_For_Error_Check.bat` |
-| Windows 시작 시 자동 실행 등록 | `03_Enable_Start_With_Windows.bat` |
-| 자동 실행 해제 | `04_Disable_Start_With_Windows.bat` |
-| 서버 종료 | `05_Stop_Server.bat` |
-| 모바일 접속 방화벽 허용 | `06_Allow_Mobile_Access_Windows_Firewall.bat` |
-| 방화벽 허용 규칙 제거 | `07_Remove_Mobile_Access_Windows_Firewall.bat` |
+서버가 자동으로 열리지 않거나 오류가 발생하면
+`02_Run_With_Window_For_Error_Check.bat`를 실행해서 오류 내용을 확인하세요.
+
 
 ## 4. 접속 주소
 
